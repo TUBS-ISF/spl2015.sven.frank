@@ -2,36 +2,36 @@
 # 0 = deselected, 1 = selected, 2 = undefined
 21SvenFrankTask1
 21JGPSTrackEdit
-22Track Modification
-22Insert Points
-22Append Points
-22Move Points
-22Delete Points
-22Split Track
-21Data Visualization
-22Data Diagram
-22Distance/Altitude 
-22Heart Rate/Time
-21General Information
+22TrackModification
+22InsertPoints
+22AppendPoints
+22MovePoints
+22DeletePoints
+22SplitTrack
+21DataVisualization
+22DataDiagram
+22DistanceAltitude 
+22HeartRateTime
+21GeneralInformation
 21Time
 21Distance
 22Altitude
-22Heart Rate
-21File Options
-21File Types
+22HeartRate
+21FileOptions
+21FileTypes
 12GPX
 22Other
 21Actions
 21Open
 22Save
-21General Features
-21Status Bar
-21Google Earth Integration
+21GeneralFeatures
+21StatusBar
+11GoogleEarthIntegration
 12FlyOver
 22Maps
 22OSM
-22Google Maps
-22More Maps
-22Map Actions
-22Cropped Map Images
-22Move Map
+22GoogleMaps
+22MoreMaps
+22MapActions
+22CroppedMapImages
+22MoveMap

@@ -1,37 +1,37 @@
 # Lists all features from the model with manual (first digit) and automatic (second digit) selection
 # 0 = deselected, 1 = selected, 2 = undefined
 21SvenFrankTask1
-11JGPSTrackEdit
-11Track Modification
-12Insert Points
-12Append Points
-12Move Points
-12Delete Points
-12Split Track
-21Data Visualization
-22Data Diagram
-22Distance/Altitude 
-22Heart Rate/Time
-21General Information
+21JGPSTrackEdit
+21TrackModification
+12InsertPoints
+12AppendPoints
+12MovePoints
+12DeletePoints
+12SplitTrack
+21DataVisualization
+22DataDiagram
+22DistanceAltitude 
+22HeartRateTime
+21GeneralInformation
 21Time
 21Distance
 22Altitude
-22Heart Rate
-21File Options
-22File Types
-22GPX
-22Other
+22HeartRate
+21FileOptions
+21FileTypes
+11GPX
+12Other
 21Actions
 21Open
 12Save
-21General Features
-21Status Bar
-22Google Earth Integration
+21GeneralFeatures
+21StatusBar
+22GoogleEarthIntegration
 22FlyOver
 21Maps
-11OSM
-22Google Maps
-22More Maps
-21Map Actions
-12Cropped Map Images
-21Move Map
+21OSM
+12GoogleMaps
+22MoreMaps
+21MapActions
+12CroppedMapImages
+11MoveMap
