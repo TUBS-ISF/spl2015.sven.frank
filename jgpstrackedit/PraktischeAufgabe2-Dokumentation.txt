@@ -27,8 +27,9 @@ Orte der Funktionalität:
 	- 'Kacheldownload'
 
 
-
-
+Test: Ein Test der verschiedenen Konfigurationen, wurde an dieser Stelle ausgelassen, da die Features 
+von einander unabhängig sind. Jedes der 3 Featrues kann eigenständig an- oder abgeschaltet werden über 
+den entsprechenden Eintrag in der Conf-Klasse.
 
 
 
