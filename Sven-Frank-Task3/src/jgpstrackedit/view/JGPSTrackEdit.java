@@ -80,6 +80,14 @@ import jgpstrackedit.view.util.ColorRenderer;
 import jgpstrackedit.international.International;
 import jgpstrackedit.util.Parser;
 
+//-----------------------------------------------------
+//DEFINES for Task3
+//#define NOT_DIVIDABLE
+//#define NOT_MERGEABLE
+//-----------------------------------------------------
+
+
+
 /* TODO:
  * AltitudeProfil, Sync selected Point to Map
  - Internationalisierung (Deutsch)
@@ -680,6 +688,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		toolBar.add(btnReverseTrack);
 
+		
 		btnSplitTrack = new JButton("");
 		btnSplitTrack.setMaximumSize(new Dimension(20, 20));
 		btnSplitTrack.setMinimumSize(new Dimension(20, 20));
@@ -694,6 +703,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				handleSplit();
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_DIVIDABLE
+		btnSplitTrack.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		toolBar.add(btnSplitTrack);
 
 		btnMergeTrack = new JButton("");
@@ -710,6 +724,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				handleMerge();
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_MERGEABLE
+		btnMergeTrack.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		toolBar.add(btnMergeTrack);
 
 		btnCompressTrack = new JButton("");
@@ -1321,6 +1340,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_DIVIDABLE
+		mntmSplit.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		trackMenu.add(mntmSplit);
 
 		mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
@@ -1331,6 +1355,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_MERGEABEL
+//@		mntmMerge.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		trackMenu.add(mntmMerge);
 		trackMenu.addSeparator();
 
