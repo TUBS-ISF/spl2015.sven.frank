@@ -1,0 +1,37 @@
+# Lists all features from the model with manual (first digit) and automatic (second digit) selection
+# 0 = deselected, 1 = selected, 2 = undefined
+21SvenFrankTask3
+11JGPSTrackEdit
+21TrackModification
+12InsertPoints
+12AppendPoints
+12MovePoints
+12DeletePoints
+12SplitTrack
+21DataVisualization
+22DataDiagram
+22DistanceAltitude
+22HeartRateTime
+11GeneralInformation
+11Time
+11Distance
+22Altitude
+22HeartRate
+21FileOptions
+21FileTypes
+11GPX
+12Other
+11Actions
+11Open
+12Save
+21GeneralFeatures
+11StatusBar
+22GoogleEarthIntegration
+22FlyOver
+21Maps
+11OSM
+12GoogleMaps
+22MoreMaps
+11MapActions
+12CroppedMapImages
+11MoveMap
