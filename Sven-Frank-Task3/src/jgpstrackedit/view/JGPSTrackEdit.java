@@ -84,6 +84,8 @@ import jgpstrackedit.util.Parser;
 //DEFINES for Task3
 //#define NOT_DIVIDABLE
 //#define NOT_MERGEABLE
+//#define NOT_REVERSIBLE
+//#define NOT_COMPRESSIBLE
 //-----------------------------------------------------
 
 
@@ -686,6 +688,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.reverseTrack();
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_REVERSIBLE
+		btnReverseTrack.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		toolBar.add(btnReverseTrack);
 
 		
@@ -746,6 +753,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.compress();
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_COMPRESSIBLE
+		btnCompressTrack.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		toolBar.add(btnCompressTrack);
 
 		btnUpdateElevations = new JButton("");
@@ -1319,6 +1331,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				jMenuItemReverseActionPerformed(evt);
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_REVERSIBLE
+		jMenuItemReverse.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 
 		mntmNew = new JMenuItem(International.getText("menu.Track.New"));
 		mntmNew.addActionListener(new ActionListener() {
@@ -1356,8 +1373,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		//-----------------------------------------------------
-		//#ifdef NOT_MERGEABEL
-//@		mntmMerge.setEnabled(false);
+		//#ifdef NOT_MERGEABLE
+		mntmMerge.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmMerge);
@@ -1378,6 +1395,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.compress();
 			}
 		});
+		//-----------------------------------------------------
+		//#ifdef NOT_COMPRESSIBLE
+		mntmCompress.setEnabled(false);
+		//#endif
+		//-----------------------------------------------------
 		trackMenu.add(mntmCompress);
 		trackMenu.add(mntmUpdateElevation);
 
