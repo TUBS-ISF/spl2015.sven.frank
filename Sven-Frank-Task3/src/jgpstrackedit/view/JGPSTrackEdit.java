@@ -82,10 +82,16 @@ import jgpstrackedit.util.Parser;
 
 //-----------------------------------------------------
 //DEFINES for Task3
-//#define NOT_DIVIDABLE
-//#define NOT_MERGEABLE
-//#define NOT_REVERSIBLE
-//#define NOT_COMPRESSIBLE
+
+//define NOT_DIVIDABLE
+//define NOT_MERGEABLE
+//define NOT_REVERSIBLE
+//define NOT_COMPRESSIBLE
+//define NOT_SAVEABLE
+//define NO_MAPDOWNLOAD
+
+//#define NOT_ONLYOSM
+
 //-----------------------------------------------------
 
 
@@ -95,11 +101,6 @@ import jgpstrackedit.util.Parser;
  - Internationalisierung (Deutsch)
 
  */
-class Conf {
-	public static boolean OnlyOSM = true;
-	public static boolean SavePossibility = false;
-	public static boolean MapTileDownload = false;
-}
 
 /**
  * JGPSTrackEdit is a tool for editing (gps) tracks and planing (multiple days)
@@ -180,7 +181,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			rdbtnmntmOpenstreetmapmapnik.setSelected(true);
 			uiController.tileManagerOSM_Mapnik();
 		}
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			if (mapType.equals("MapQuest")) {
 				uiController.tileManagerMapQuest();
 				this.rdbtnmntmMapquest.setSelected(true);
@@ -209,7 +210,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.tileManager4UMap();
 				this.rdbtnmntmumap.setSelected(true);
 			} 
-		}
+		//#endif
 
 		// Variant: Starts with u4map
 		// rdbtnmntmumap.setSelected(true);
@@ -485,10 +486,10 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		saveAsMenuItem = new javax.swing.JMenuItem();
-		if(!Conf.SavePossibility){
-			saveMenuItem.setEnabled(false);
-			saveAsMenuItem.setEnabled(false);
-		}
+		//#ifdef NOT_SAVEABLE
+//@		saveMenuItem.setEnabled(false);
+//@		saveAsMenuItem.setEnabled(false);
+		//#endif
 		// -------------------------------------------------------------------------------------------------
 		exitMenuItem = new javax.swing.JMenuItem();
 		trackMenu = new javax.swing.JMenu();
@@ -582,9 +583,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				saveAsMenuItemActionPerformed(e);
 			}
 		});
-		if(!Conf.SavePossibility){
-			btnNewButton.setEnabled(false);
-		}
+		//#ifdef NOT_SAVEABLE
+//@			btnNewButton.setEnabled(false);
+		//#endif
 		// -------------------------------------------------------------------------------------------------
 		
 		JButton btnNewButton_1 = new JButton("");
@@ -620,9 +621,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.save();
 			}
 		});
-		if(!Conf.SavePossibility){
-			jButtonSave.setEnabled(false);
-		}
+		//#ifdef NOT_SAVEABLE
+//@			jButtonSave.setEnabled(false);
+		//#endif
 		// -------------------------------------------------------------------------------------------------
 		toolBar.add(jButtonSave);
 		toolBar.add(btnNewButton);
@@ -690,7 +691,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_REVERSIBLE
-		btnReverseTrack.setEnabled(false);
+//@		btnReverseTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnReverseTrack);
@@ -712,7 +713,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_DIVIDABLE
-		btnSplitTrack.setEnabled(false);
+//@		btnSplitTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnSplitTrack);
@@ -733,7 +734,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_MERGEABLE
-		btnMergeTrack.setEnabled(false);
+//@		btnMergeTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnMergeTrack);
@@ -755,7 +756,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_COMPRESSIBLE
-		btnCompressTrack.setEnabled(false);
+//@		btnCompressTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnCompressTrack);
@@ -1023,9 +1024,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		btnNewButton_4.setContentAreaFilled(false);
 		btnNewButton_4.setBorder(null);
 		toolBar.add(btnNewButton_4);
-		if(!Conf.MapTileDownload) {
-			btnNewButton_4.setEnabled(false);
-		}
+		//#ifdef NO_MAPDOWNLOAD
+//@		btnNewButton_4.setEnabled(false);
+		//#endif
 		// -------------------------------------------------------------------------------------------------
 		toolBar.add(btnPanNorth);
 
@@ -1304,9 +1305,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				mntmSaveMapViewActionPerformed(arg0);
 			}
 		});
-		if(!Conf.MapTileDownload) {
-			mntmSaveMapView.setEnabled(false);
-		}
+		//#ifdef NO_MAPDOWNLOAD
+//@		mntmSaveMapView.setEnabled(false);
+		//#endif
 		fileMenu.add(mntmSaveMapView);
 		// -------------------------------------------------------------------------------------------------
 
@@ -1333,7 +1334,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_REVERSIBLE
-		jMenuItemReverse.setEnabled(false);
+//@		jMenuItemReverse.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 
@@ -1359,7 +1360,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_DIVIDABLE
-		mntmSplit.setEnabled(false);
+//@		mntmSplit.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmSplit);
@@ -1374,7 +1375,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_MERGEABLE
-		mntmMerge.setEnabled(false);
+//@		mntmMerge.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmMerge);
@@ -1397,7 +1398,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_COMPRESSIBLE
-		mntmCompress.setEnabled(false);
+//@		mntmCompress.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmCompress);
@@ -1658,9 +1659,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.saveMapExtract();
 			}
 		});
-		if(!Conf.MapTileDownload) {
-			mntmSaveCurrentMap.setEnabled(false);
-		}
+		//#ifdef NO_MAPDOWNLOAD
+//@		mntmSaveCurrentMap.setEnabled(false);
+		//#endif
 		mnView.add(mntmSaveCurrentMap);
 		// -------------------------------------------------------------------------------------------------
 		mnView.addSeparator();
@@ -1707,17 +1708,17 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		JRadioButtonMenuItem rdbtnmntmGooglemap = new JRadioButtonMenuItem(
 				"GoogleMap");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmGooglemap);
 			rdbtnmntmGooglemap.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					uiController.tileManagerGoogleMap();
 				}
 			});
-		}
+		//#endif
 
 		rdbtnmntmHikebikemap = new JRadioButtonMenuItem("HikeBikeMap");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmHikebikemap);
 			rdbtnmntmHikebikemap.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1725,10 +1726,10 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 			mnMaps.add(rdbtnmntmHikebikemap);
-		}
+		//#endif
 
 		rdbtnmntmumap = new JRadioButtonMenuItem("4UMap");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmumap);
 			rdbtnmntmumap.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1736,11 +1737,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 			mnMaps.add(rdbtnmntmumap);
-		}
+		//#endif
 		mnMaps.add(new JSeparator());
 
 		rdbtnmntmMapquest = new JRadioButtonMenuItem("MapQuest");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			rdbtnmntmMapquest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					uiController.tileManagerMapQuest();
@@ -1749,11 +1750,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			mnMaps.add(rdbtnmntmMapquest);
 		
 			mapRadioButtons.add(rdbtnmntmMapquest);
-		}
+		//#endif
 
 		rdbtnmntmMapquestsatellite = new JRadioButtonMenuItem(
 				"MapQuest (Satellite)");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			rdbtnmntmMapquestsatellite.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					uiController.tileManagerMapQuestSat();
@@ -1761,11 +1762,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			mnMaps.add(rdbtnmntmMapquestsatellite);
 			mapRadioButtons.add(rdbtnmntmMapquestsatellite);
-		}
+		//#endif
 
 		rdbtnmntmMapquesthybride = new JRadioButtonMenuItem(
 				"MapQuest (Hybride)");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			rdbtnmntmMapquesthybride.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					uiController.tileManagerMapQuestHybride();
@@ -1773,16 +1774,16 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			mnMaps.add(rdbtnmntmMapquesthybride);
 			mapRadioButtons.add(rdbtnmntmMapquesthybride);
-		}
+		//#endif
 
-		if(!Conf.OnlyOSM) {
-			mnMaps.addSeparator();
-			mnMaps.add(rdbtnmntmGooglemap);
-		}
+		//#ifdef NOT_ONLYOSM
+		mnMaps.addSeparator();
+		mnMaps.add(rdbtnmntmGooglemap);
+		//#endif
 
 		rdbtnmntmGooglemapsatellite = new JRadioButtonMenuItem(
 				"GoogleMap (Satellite)");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmGooglemapsatellite);
 			rdbtnmntmGooglemapsatellite.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1790,11 +1791,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 			mnMaps.add(rdbtnmntmGooglemapsatellite);
-		}
+		//#endif
 
 		rdbtnmntmGooglemaphybrid = new JRadioButtonMenuItem(
 				"GoogleMap (Hybrid)");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmGooglemaphybrid);
 			rdbtnmntmGooglemaphybrid.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1802,11 +1803,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 			mnMaps.add(rdbtnmntmGooglemaphybrid);
-		}
+		//#endif
 
 		rdbtnmntmGooglemapterrain = new JRadioButtonMenuItem(
 				"GoogleMap (Terrain)");
-		if(!Conf.OnlyOSM) {
+		//#ifdef NOT_ONLYOSM
 			mapRadioButtons.add(rdbtnmntmGooglemapterrain);
 			rdbtnmntmGooglemapterrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1814,7 +1815,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 			mnMaps.add(rdbtnmntmGooglemapterrain);
-		}
+		//#endif
 		
 		// -------------------------------------------------------------------------------------------------
 		mnView.addSeparator();
@@ -1941,9 +1942,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable "save map tile"
-		if(!Conf.MapTileDownload) {
-			mnTiledownload.setEnabled(false);
-		}
+		//#ifdef NO_MAPDOWNLOAD
+//@			mnTiledownload.setEnabled(false);
+		//#endif
 		// -------------------------------------------------------------------------------------------------
 		mntmStartTileDownload = new JMenuItem(
 				International.getText("menu.TileDown.Start_Tile_Download_Mode"));
