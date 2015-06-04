@@ -1,0 +1,47 @@
+Im Rahmen der Aufgabe 3 können folgende Features über Präprozessor-Defines 
+in der Main-Methode an und abgewählt werden:
+!!!!!!!!!!!!!!!
+Alle anpassungen finden sich in der Main-Datei 'src.jgpstrackedit.view.JGPSTrackEdit.java'
+!!!!!!!!!!!!!!!
+
+
+Folgende Funktionen wurden umgeändert von BOOL zu Präprozessor
+
+- Speicher & Speichern unter neuem Dateinamen: Dazu wird lediglich in der Conf-Klasse
+ein Parameter umgestellt, wodurch sämtliche Schaltflächen in der Anwendung ausgegraut 
+oder nicht angezeigt werden. In diesem Fall im Kontextmenü und in der oberen Schaltleiste.
+Ebenfalls funktionieren keine Shortcuts mehr für diese Funktionen
+
+- Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
+lediglich zwei Kartenanbieter zur Verfügung gestellt (OpenStreetMap und OpenCycleMap). Dadurch 
+entfällt die Anbindung an Google. Ausgewählt werden können die Karten über das Kontextmenü
+unter 'Ansicht-> Karten'
+
+- Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
+ist es möglich aktuelle Kartenauschnitte als Bilder zu speichern. Dadurch können diese Dateien dann
+auch offline auf anderen Geräten angeschaut werden.
+Orte der Funktionalität:
+	- Button in der Funktionsleiste
+	- 'Datei -> Kartenansicht als Bild speichern'
+	- 'Ansicht -> Aktuellen Kartenausschnitt speichern'
+	- 'Kacheldownload'
+
+Folgende Funktionen wurde hinzugefügt und sind über Präprozessor Direktiven steuerbar:
+
+- Track teilbar in zwei einzelne Tracks (Splitting - Direktive: NOT_DIVIDABLE)
+- Tracks zusammenführen (Merge - Direktive: NOT_MERGEABLE)
+- Track umkehren (Reverse - Direktive: NOT_REVERSIBLE)
+- Track komprimieren (Compress - Direktive: NOT_COMPRESSIBLE)
+
+Test: Ein Test der verschiedenen Konfigurationen, wurde an dieser Stelle ausgelassen, da die Features 
+von einander unabhängig sind. Jedes der Featrues kann eigenständig an- oder abgeschaltet werden über 
+entsprechendes Define.
+
+
+
+ANMERKUNG: Sämtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarblöcke der 
+folgenden Art gekennzeichnet:
+//---------------------------
+// Beschreibung
+Quellcode
+//---------------------------
