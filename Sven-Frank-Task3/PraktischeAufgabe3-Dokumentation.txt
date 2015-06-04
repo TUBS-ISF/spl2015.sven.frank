@@ -38,7 +38,6 @@ von einander unabhängig sind. Jedes der Featrues kann eigenständig an- oder abge
 entsprechendes Define.
 
 
-
 ANMERKUNG: Sämtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarblöcke der 
 folgenden Art gekennzeichnet:
 //---------------------------
