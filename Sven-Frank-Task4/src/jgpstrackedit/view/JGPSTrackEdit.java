@@ -89,10 +89,6 @@ import jgpstrackedit.util.Parser;
  - Internationalisierung (Deutsch)
 
  */
-class Conf {
-	public static boolean OnlyOSM = true;
-}
-
 
 
 /**
@@ -182,36 +178,36 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			rdbtnmntmOpenstreetmapmapnik.setSelected(true);
 			uiController.tileManagerOSM_Mapnik();
 		}
-		if(!Conf.OnlyOSM) {
-			if (mapType.equals("MapQuest")) {
-				uiController.tileManagerMapQuest();
-				this.rdbtnmntmMapquest.setSelected(true);
-			} else if (mapType.equals("MapQuestSat")) {
-				uiController.tileManagerMapQuestSat();
-				this.rdbtnmntmMapquestsatellite.setSelected(true);
-			} else if (mapType.equals("MapQuestHybride")) {
-				uiController.tileManagerMapQuestHybride();
-				this.rdbtnmntmMapquesthybride.setSelected(true);
-			} else if (mapType.equals("HikeBikeMap")) {
-				uiController.tileManagerHikeBikeMap();
-				this.rdbtnmntmHikebikemap.setSelected(true);
-			} else if (mapType.equals("GoogleMap")) {
-				uiController.tileManagerGoogleMap();
-				this.rdbtnmntmGooglemap.setSelected(true);
-			} else if (mapType.equals("GoogleMapTerrain")) {
-				uiController.tileManagerGoogleMapTerrain();
-				this.rdbtnmntmGooglemapterrain.setSelected(true);
-			} else if (mapType.equals("GoogleMapSatellite")) {
-				uiController.tileManagerGoogleMapSatellite();
-				this.rdbtnmntmGooglemapsatellite.setSelected(true);
-			} else if (mapType.equals("GoogleMapHybrid")) {
-				uiController.tileManagerGoogleMapHybrid();
-				this.rdbtnmntmGooglemaphybrid.setSelected(true);
-			} else if (mapType.equals("4UMap")) {
-				uiController.tileManager4UMap();
-				this.rdbtnmntmumap.setSelected(true);
-			} 
-		}
+
+		if (mapType.equals("MapQuest")) {
+			uiController.tileManagerMapQuest();
+			this.rdbtnmntmMapquest.setSelected(true);
+		} else if (mapType.equals("MapQuestSat")) {
+			uiController.tileManagerMapQuestSat();
+			this.rdbtnmntmMapquestsatellite.setSelected(true);
+		} else if (mapType.equals("MapQuestHybride")) {
+			uiController.tileManagerMapQuestHybride();
+			this.rdbtnmntmMapquesthybride.setSelected(true);
+		} else if (mapType.equals("HikeBikeMap")) {
+			uiController.tileManagerHikeBikeMap();
+			this.rdbtnmntmHikebikemap.setSelected(true);
+		} else if (mapType.equals("GoogleMap")) {
+			uiController.tileManagerGoogleMap();
+			this.rdbtnmntmGooglemap.setSelected(true);
+		} else if (mapType.equals("GoogleMapTerrain")) {
+			uiController.tileManagerGoogleMapTerrain();
+			this.rdbtnmntmGooglemapterrain.setSelected(true);
+		} else if (mapType.equals("GoogleMapSatellite")) {
+			uiController.tileManagerGoogleMapSatellite();
+			this.rdbtnmntmGooglemapsatellite.setSelected(true);
+		} else if (mapType.equals("GoogleMapHybrid")) {
+			uiController.tileManagerGoogleMapHybrid();
+			this.rdbtnmntmGooglemaphybrid.setSelected(true);
+		} else if (mapType.equals("4UMap")) {
+			uiController.tileManager4UMap();
+			this.rdbtnmntmumap.setSelected(true);
+		} 
+		
 
 		// Variant: Starts with u4map
 		// rdbtnmntmumap.setSelected(true);
@@ -230,8 +226,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		this.savetrackas_plugin = new SaveTrackAsButton();
 		savetrackas_plugin.setApplication(this);
 		
-		this.savemapextract_plugin = new SaveMapExtractButton();
-		savemapextract_plugin.setApplication(this);
+		//this.savemapextract_plugin = new SaveMapExtractButton();
+		//savemapextract_plugin.setApplication(this);
 		
 		this.savemapimage_plugin = new SaveMapAsImageButton();
 		savemapimage_plugin.setApplication(this);
@@ -1303,7 +1299,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			fileMenu.add(mntmSaveMapView);
 		}
-		
 		// -------------------------------------------------------------------------------------------------
 
 		mntmSaveAltitudeProfile = new JMenuItem(International.getText("menu.File.Save_Altitude_Profile_as_Image") + "...");
@@ -1668,8 +1663,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		mnMaps.add(rdbtnmntmOpenstreetmapmapnik);
 		
-		// -------------------------------------------------------------------------------------------------
-		// added: functionality give only access to OSM map
 		
 		rdbtnmntmOpencyclemap = new JRadioButtonMenuItem("OpenCycleMap");
 		mapRadioButtons.add(rdbtnmntmOpencyclemap);
@@ -1682,116 +1675,98 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		JRadioButtonMenuItem rdbtnmntmGooglemap = new JRadioButtonMenuItem(
 				"GoogleMap");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmGooglemap);
-			rdbtnmntmGooglemap.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerGoogleMap();
-				}
-			});
-		}
+		mapRadioButtons.add(rdbtnmntmGooglemap);
+		rdbtnmntmGooglemap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMap();
+			}
+		});
+		
 
 		rdbtnmntmHikebikemap = new JRadioButtonMenuItem("HikeBikeMap");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmHikebikemap);
-			rdbtnmntmHikebikemap.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerHikeBikeMap();
-				}
-			});
-			mnMaps.add(rdbtnmntmHikebikemap);
-		}
+	
+		mapRadioButtons.add(rdbtnmntmHikebikemap);
+		rdbtnmntmHikebikemap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerHikeBikeMap();
+			}
+		});
+		mnMaps.add(rdbtnmntmHikebikemap);
+		
 
 		rdbtnmntmumap = new JRadioButtonMenuItem("4UMap");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmumap);
-			rdbtnmntmumap.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManager4UMap();
-				}
-			});
-			mnMaps.add(rdbtnmntmumap);
-		}
+		mapRadioButtons.add(rdbtnmntmumap);
+		rdbtnmntmumap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManager4UMap();
+			}
+		});
+		mnMaps.add(rdbtnmntmumap);
 		mnMaps.add(new JSeparator());
 
 		rdbtnmntmMapquest = new JRadioButtonMenuItem("MapQuest");
-		if(!Conf.OnlyOSM) {
-			rdbtnmntmMapquest.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					uiController.tileManagerMapQuest();
-				}
-			});
-			mnMaps.add(rdbtnmntmMapquest);
-		
-			mapRadioButtons.add(rdbtnmntmMapquest);
-		}
+		rdbtnmntmMapquest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.tileManagerMapQuest();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquest);
+	
+		mapRadioButtons.add(rdbtnmntmMapquest);
 
 		rdbtnmntmMapquestsatellite = new JRadioButtonMenuItem(
 				"MapQuest (Satellite)");
-		if(!Conf.OnlyOSM) {
-			rdbtnmntmMapquestsatellite.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerMapQuestSat();
-				}
-			});
-			mnMaps.add(rdbtnmntmMapquestsatellite);
-			mapRadioButtons.add(rdbtnmntmMapquestsatellite);
-		}
+		rdbtnmntmMapquestsatellite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerMapQuestSat();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquestsatellite);
+		mapRadioButtons.add(rdbtnmntmMapquestsatellite);
 
 		rdbtnmntmMapquesthybride = new JRadioButtonMenuItem(
 				"MapQuest (Hybride)");
-		if(!Conf.OnlyOSM) {
-			rdbtnmntmMapquesthybride.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerMapQuestHybride();
-				}
-			});
-			mnMaps.add(rdbtnmntmMapquesthybride);
-			mapRadioButtons.add(rdbtnmntmMapquesthybride);
-		}
+		rdbtnmntmMapquesthybride.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerMapQuestHybride();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquesthybride);
+		mapRadioButtons.add(rdbtnmntmMapquesthybride);
 
-		if(!Conf.OnlyOSM) {
-			mnMaps.addSeparator();
-			mnMaps.add(rdbtnmntmGooglemap);
-		}
+		mnMaps.addSeparator();
+		mnMaps.add(rdbtnmntmGooglemap);
 
 		rdbtnmntmGooglemapsatellite = new JRadioButtonMenuItem(
 				"GoogleMap (Satellite)");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmGooglemapsatellite);
-			rdbtnmntmGooglemapsatellite.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerGoogleMapSatellite();
-				}
-			});
-			mnMaps.add(rdbtnmntmGooglemapsatellite);
-		}
+		mapRadioButtons.add(rdbtnmntmGooglemapsatellite);
+		rdbtnmntmGooglemapsatellite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapSatellite();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemapsatellite);
 
 		rdbtnmntmGooglemaphybrid = new JRadioButtonMenuItem(
 				"GoogleMap (Hybrid)");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmGooglemaphybrid);
-			rdbtnmntmGooglemaphybrid.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerGoogleMapHybrid();
-				}
-			});
-			mnMaps.add(rdbtnmntmGooglemaphybrid);
-		}
+		mapRadioButtons.add(rdbtnmntmGooglemaphybrid);
+		rdbtnmntmGooglemaphybrid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapHybrid();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemaphybrid);
 
 		rdbtnmntmGooglemapterrain = new JRadioButtonMenuItem(
 				"GoogleMap (Terrain)");
-		if(!Conf.OnlyOSM) {
-			mapRadioButtons.add(rdbtnmntmGooglemapterrain);
-			rdbtnmntmGooglemapterrain.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					uiController.tileManagerGoogleMapTerrain();
-				}
-			});
-			mnMaps.add(rdbtnmntmGooglemapterrain);
-		}
+		mapRadioButtons.add(rdbtnmntmGooglemapterrain);
+		rdbtnmntmGooglemapterrain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapTerrain();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemapterrain);
 		
-		// -------------------------------------------------------------------------------------------------
 		mnView.addSeparator();
 
 		chckbxmntmShowDayTour = new JCheckBoxMenuItem(
@@ -1912,7 +1887,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		mnTiledownload = new JMenu(
 				International.getText("menu.TileDown.Tile_Download"));
-		menuBar.add(mnTiledownload);
+		if(savemapextract_plugin != null)
+			menuBar.add(mnTiledownload);
 
 		mntmStartTileDownload = new JMenuItem(
 				International.getText("menu.TileDown.Start_Tile_Download_Mode"));
