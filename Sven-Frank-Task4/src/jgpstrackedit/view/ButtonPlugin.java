@@ -1,12 +1,13 @@
 package jgpstrackedit.view;
 
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
+
+import jgpstrackedit.control.UIController;
 
 public interface ButtonPlugin {
 	Dimension getButtonDimension();
 	String getButtonToolTip();
 	String getButtonIcon();
-	ActionListener buttonClicked();
+	void buttonClicked(UIController ui);
 	void setApplication(JGPSTrackEdit app);
 }

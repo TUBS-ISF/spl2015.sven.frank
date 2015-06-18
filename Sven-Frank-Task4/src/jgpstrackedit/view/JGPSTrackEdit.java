@@ -75,6 +75,8 @@ import jgpstrackedit.map.tiledownload.TileDownload;
 import jgpstrackedit.map.util.MapExtract;
 import jgpstrackedit.map.util.MapExtractManager;
 import jgpstrackedit.map.util.TileNumber;
+import jgpstrackedit.view.buttons.SaveTrackAsButton;
+import jgpstrackedit.view.buttons.SaveTrackButton;
 import jgpstrackedit.view.util.ColorEditor;
 import jgpstrackedit.view.util.ColorRenderer;
 import jgpstrackedit.international.International;
@@ -152,7 +154,13 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private UnDoManager appendUnDo = null;
 	private JCheckBoxMenuItem chckbxmntmScale;
 	private boolean showScale = true;
-
+	
+	//-------------------------------------------------
+	// plugins
+	private SaveTrackButton savetrack_plugin;
+	private SaveTrackAsButton savetrackas_plugin;
+	
+	//-------------------------------------------------
 	/**
 	 * Sets the variant of JGPSTrackEdit
 	 */
@@ -212,6 +220,15 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
 		own = this;
+		//-------------------------------------------------
+		// init plugins
+		this.savetrack_plugin = new SaveTrackButton();
+		savetrack_plugin.setApplication(this);
+		
+		this.savetrackas_plugin = new SaveTrackAsButton();
+		savetrackas_plugin.setApplication(this);
+		
+		//-------------------------------------------------
 		Configuration.addConfigurationObserver(this);
 		MapExtractManager.load();
 		International.initialize(Configuration.getProperty("LOCALE"));
@@ -471,16 +488,15 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable save/save as in context menu
 		saveMenuItem = new javax.swing.JMenuItem();
-		saveMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.save();
-			}
-		});
-		saveAsMenuItem = new javax.swing.JMenuItem();
-		if(!Conf.SavePossibility){
-			saveMenuItem.setEnabled(false);
-			saveAsMenuItem.setEnabled(false);
+		if(savetrack_plugin != null) {
+			saveMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savetrack_plugin.buttonClicked(uiController);
+				}
+			});
 		}
+		saveAsMenuItem = new javax.swing.JMenuItem();
+
 		// -------------------------------------------------------------------------------------------------
 		exitMenuItem = new javax.swing.JMenuItem();
 		trackMenu = new javax.swing.JMenu();
@@ -559,23 +575,22 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		toolBar.add(btnOpenGpsiesTrack);
 
 		// -------------------------------------------------------------------------------------------------
-		// added: functionality to disable save_as button according to global Conf class
+		// added: functionality to disable save_as button according to blackbox functions
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setBorder(null);
-		btnNewButton.setMinimumSize(new Dimension(20, 20));
-		btnNewButton.setMaximumSize(new Dimension(20, 20));
-		btnNewButton.setPreferredSize(new Dimension(20, 20));
-		btnNewButton.setToolTipText(International.getText("Save_As"));
-		btnNewButton.setContentAreaFilled(false);
-		btnNewButton.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/page_save.png")));
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveAsMenuItemActionPerformed(e);
-			}
-		});
-		if(!Conf.SavePossibility){
-			btnNewButton.setEnabled(false);
+		if(savetrackas_plugin != null) {
+			btnNewButton.setBorder(null);
+			btnNewButton.setMinimumSize(savetrackas_plugin.getButtonDimension());
+			btnNewButton.setMaximumSize(savetrackas_plugin.getButtonDimension());
+			btnNewButton.setPreferredSize(savetrackas_plugin.getButtonDimension());
+			btnNewButton.setToolTipText(savetrackas_plugin.getButtonToolTip());
+			btnNewButton.setContentAreaFilled(false);
+			btnNewButton.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(savetrackas_plugin.getButtonIcon())));
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savetrackas_plugin.buttonClicked(uiController);;
+				}
+			});
 		}
 		// -------------------------------------------------------------------------------------------------
 		
@@ -597,27 +612,28 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		toolBar.addSeparator();
 		
 		// -------------------------------------------------------------------------------------------------
-		// added: functionality to disable save_track button according to global Conf class
+		// added: functionality to disable save_track button according to blackbox functions
+		
 		jButtonSave = new javax.swing.JButton();
-		jButtonSave.setBorder(null);
-		jButtonSave.setMaximumSize(new Dimension(20, 20));
-		jButtonSave.setMinimumSize(new Dimension(20, 20));
-		jButtonSave.setToolTipText(International.getText("Save_Track"));
-		jButtonSave.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/disk.png")));
-		jButtonSave.setPreferredSize(new Dimension(20, 20));
-		jButtonSave.setContentAreaFilled(false);
-		jButtonSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.save();
-			}
-		});
-		if(!Conf.SavePossibility){
-			jButtonSave.setEnabled(false);
+		if(savetrack_plugin != null) {
+			jButtonSave.setBorder(null);
+			jButtonSave.setMaximumSize(savetrack_plugin.getButtonDimension());
+			jButtonSave.setMinimumSize(savetrack_plugin.getButtonDimension());
+			jButtonSave.setToolTipText(savetrack_plugin.getButtonToolTip());
+			jButtonSave.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(savetrack_plugin.getButtonIcon())));
+			jButtonSave.setPreferredSize(savetrack_plugin.getButtonDimension());
+			jButtonSave.setContentAreaFilled(false);
+			jButtonSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savetrack_plugin.buttonClicked(uiController);
+				}
+			});
+			toolBar.add(jButtonSave);
 		}
 		// -------------------------------------------------------------------------------------------------
-		toolBar.add(jButtonSave);
-		toolBar.add(btnNewButton);
+		if(savetrackas_plugin != null)
+			toolBar.add(btnNewButton);
 
 		btnConfiguration = new JButton("");
 		btnConfiguration.setBorder(null);
@@ -1223,9 +1239,12 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		fileMenu.add(mntmOpenDirectory);
 		fileMenu.addSeparator();
-		saveMenuItem.setText(International.getText("menu.File.Save"));
-		fileMenu.add(saveMenuItem);
-
+		//-------------------------------------------------------------
+		if(savetrack_plugin != null) {
+			saveMenuItem.setText(International.getText("menu.File.Save"));
+			fileMenu.add(saveMenuItem);
+		}
+		//-------------------------------------------------------------
 		saveAsMenuItem.setText(International.getText("menu.File.Save_As")
 				+ "...");
 		saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
