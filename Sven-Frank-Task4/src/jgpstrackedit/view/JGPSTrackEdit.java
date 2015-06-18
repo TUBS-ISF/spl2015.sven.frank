@@ -75,6 +75,7 @@ import jgpstrackedit.map.tiledownload.TileDownload;
 import jgpstrackedit.map.util.MapExtract;
 import jgpstrackedit.map.util.MapExtractManager;
 import jgpstrackedit.map.util.TileNumber;
+import jgpstrackedit.view.buttons.SaveMapAsImageButton;
 import jgpstrackedit.view.buttons.SaveMapExtractButton;
 import jgpstrackedit.view.buttons.SaveTrackAsButton;
 import jgpstrackedit.view.buttons.SaveTrackButton;
@@ -159,6 +160,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private SaveTrackButton savetrack_plugin;
 	private SaveTrackAsButton savetrackas_plugin;
 	private SaveMapExtractButton savemapextract_plugin;
+	private SaveMapAsImageButton savemapimage_plugin;
 	
 	//-------------------------------------------------
 	/**
@@ -228,8 +230,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		this.savetrackas_plugin = new SaveTrackAsButton();
 		savetrackas_plugin.setApplication(this);
 		
-		//this.savemapextract_plugin = new SaveMapExtractButton();
-		//savemapextract_plugin.setApplication(this);
+		this.savemapextract_plugin = new SaveMapExtractButton();
+		savemapextract_plugin.setApplication(this);
+		
+		this.savemapimage_plugin = new SaveMapAsImageButton();
+		savemapimage_plugin.setApplication(this);
 		
 		//-------------------------------------------------
 		Configuration.addConfigurationObserver(this);
@@ -1288,14 +1293,17 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		fileMenu.addSeparator();
 		
 		// -------------------------------------------------------------------------------------------------
-		// added: functionality to disable "save map tile"
-		mntmSaveMapView = new JMenuItem(International.getText("menu.File.Save_Map_View_as_Image") + "...");
-		mntmSaveMapView.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				mntmSaveMapViewActionPerformed(arg0);
-			}
-		});
-		fileMenu.add(mntmSaveMapView);
+		// added: functionality to disable "save view as image"
+		if(savemapimage_plugin != null) {
+			mntmSaveMapView = new JMenuItem(savemapimage_plugin.getMenuNameText());
+			mntmSaveMapView.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					savemapimage_plugin.buttonClicked(uiController);
+				}
+			});
+			fileMenu.add(mntmSaveMapView);
+		}
+		
 		// -------------------------------------------------------------------------------------------------
 
 		mntmSaveAltitudeProfile = new JMenuItem(International.getText("menu.File.Save_Altitude_Profile_as_Image") + "...");
@@ -2850,10 +2858,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			repaint();
 		}
 
-	}
-	
-	protected void mntmSaveMapViewActionPerformed(ActionEvent arg0) {
-		uiController.saveMapViewAsImage();
 	}
 	
 	protected void mntmSaveAltitudeProfileActionPerformed(ActionEvent arg0) {
