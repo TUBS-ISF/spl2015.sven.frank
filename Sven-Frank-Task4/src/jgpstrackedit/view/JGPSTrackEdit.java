@@ -226,8 +226,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		this.savetrackas_plugin = new SaveTrackAsButton();
 		savetrackas_plugin.setApplication(this);
 		
-		//this.savemapextract_plugin = new SaveMapExtractButton();
-		//savemapextract_plugin.setApplication(this);
+		this.savemapextract_plugin = new SaveMapExtractButton();
+		savemapextract_plugin.setApplication(this);
 		
 		this.savemapimage_plugin = new SaveMapAsImageButton();
 		savemapimage_plugin.setApplication(this);
