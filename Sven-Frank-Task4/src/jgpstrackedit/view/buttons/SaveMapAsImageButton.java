@@ -3,9 +3,8 @@ package jgpstrackedit.view.buttons;
 import jgpstrackedit.control.UIController;
 import jgpstrackedit.international.International;
 import jgpstrackedit.view.JGPSTrackEdit;
-import jgpstrackedit.view.MenuItemCleanPlugin;
 
-public class SaveMapAsImageButton implements MenuItemCleanPlugin {
+public class SaveMapAsImageButton implements IMenuItemCleanPlugin {
 	private JGPSTrackEdit application;
 
 	@Override

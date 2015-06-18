@@ -4,10 +4,9 @@ import java.awt.Dimension;
 
 import jgpstrackedit.control.UIController;
 import jgpstrackedit.international.International;
-import jgpstrackedit.view.ButtonPlugin;
 import jgpstrackedit.view.JGPSTrackEdit;
 
-public class SaveTrackAsButton implements ButtonPlugin{
+public class SaveTrackAsButton implements IButtonPlugin{
 	private JGPSTrackEdit application;
 	@Override
 	public Dimension getButtonDimension() {

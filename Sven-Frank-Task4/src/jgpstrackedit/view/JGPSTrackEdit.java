@@ -79,6 +79,7 @@ import jgpstrackedit.view.buttons.SaveMapAsImageButton;
 import jgpstrackedit.view.buttons.SaveMapExtractButton;
 import jgpstrackedit.view.buttons.SaveTrackAsButton;
 import jgpstrackedit.view.buttons.SaveTrackButton;
+import jgpstrackedit.view.buttons.TrackModificationButtons;
 import jgpstrackedit.view.util.ColorEditor;
 import jgpstrackedit.view.util.ColorRenderer;
 import jgpstrackedit.international.International;
@@ -157,6 +158,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private SaveTrackAsButton savetrackas_plugin;
 	private SaveMapExtractButton savemapextract_plugin;
 	private SaveMapAsImageButton savemapimage_plugin;
+	private TrackModificationButtons trackmodification_plugin;
 	
 	//-------------------------------------------------
 	/**
@@ -232,6 +234,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		this.savemapimage_plugin = new SaveMapAsImageButton();
 		savemapimage_plugin.setApplication(this);
 		
+		this.trackmodification_plugin = new TrackModificationButtons();
+		trackmodification_plugin.initButtons(this);
 		//-------------------------------------------------
 		Configuration.addConfigurationObserver(this);
 		MapExtractManager.load();
@@ -685,72 +689,76 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		toolBar.add(btnNewTrack);
-
-		btnReverseTrack = new JButton("");
-		btnReverseTrack.setBorder(null);
-		btnReverseTrack.setContentAreaFilled(false);
-		btnReverseTrack.setMaximumSize(new Dimension(20, 20));
-		btnReverseTrack.setMinimumSize(new Dimension(20, 20));
-		btnReverseTrack.setPreferredSize(new Dimension(20, 20));
-		btnReverseTrack.setToolTipText(International.getText("Reverse_Track"));
-		btnReverseTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/arrow_refresh.png")));
-		btnReverseTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.reverseTrack();
-			}
-		});
-		toolBar.add(btnReverseTrack);
-
-		btnSplitTrack = new JButton("");
-		btnSplitTrack.setMaximumSize(new Dimension(20, 20));
-		btnSplitTrack.setMinimumSize(new Dimension(20, 20));
-		btnSplitTrack.setPreferredSize(new Dimension(20, 20));
-		btnSplitTrack.setToolTipText(International.getText("Split_Track"));
-		btnSplitTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/arrow_divide.png")));
-		btnSplitTrack.setContentAreaFilled(false);
-		btnSplitTrack.setBorder(null);
-		btnSplitTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				handleSplit();
-			}
-		});
-		toolBar.add(btnSplitTrack);
-
-		btnMergeTrack = new JButton("");
-		btnMergeTrack.setBorder(null);
-		btnMergeTrack.setContentAreaFilled(false);
-		btnMergeTrack.setMaximumSize(new Dimension(20, 20));
-		btnMergeTrack.setMinimumSize(new Dimension(20, 20));
-		btnMergeTrack.setPreferredSize(new Dimension(20, 20));
-		btnMergeTrack.setToolTipText(International.getText("Merge_Track"));
-		btnMergeTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/arrow_join.png")));
-		btnMergeTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				handleMerge();
-			}
-		});
-		toolBar.add(btnMergeTrack);
-
-		btnCompressTrack = new JButton("");
-		btnCompressTrack.setMaximumSize(new Dimension(20, 20));
-		btnCompressTrack.setMinimumSize(new Dimension(20, 20));
-		btnCompressTrack.setPreferredSize(new Dimension(20, 20));
-		btnCompressTrack
-				.setToolTipText(International.getText("Compress_Track"));
-		btnCompressTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/arrow_in.png")));
-		btnCompressTrack.setContentAreaFilled(false);
-		btnCompressTrack.setBorder(null);
-		btnCompressTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.compress();
-			}
-		});
-		toolBar.add(btnCompressTrack);
-
+		//---------------------------------------------------------------------
+		// modifactions for track modification plugin
+		// TODO:
+		if(trackmodification_plugin != null) {
+			btnReverseTrack = new JButton("");
+			btnReverseTrack.setBorder(null);
+			btnReverseTrack.setContentAreaFilled(false);
+			btnReverseTrack.setMaximumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setMinimumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setPreferredSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setToolTipText(trackmodification_plugin.track_reverse_btn.getButtonToolTip());
+			btnReverseTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(trackmodification_plugin.track_reverse_btn.getButtonIcon())));
+			btnReverseTrack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					trackmodification_plugin.track_reverse_btn.buttonClicked(uiController);
+				}
+			});
+			toolBar.add(btnReverseTrack);
+	
+			btnSplitTrack = new JButton("");
+			btnSplitTrack.setMaximumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
+			btnSplitTrack.setMinimumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
+			btnSplitTrack.setPreferredSize(trackmodification_plugin.track_split_btn.getButtonDimension());
+			btnSplitTrack.setToolTipText(trackmodification_plugin.track_split_btn.getButtonToolTip());
+			btnSplitTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(trackmodification_plugin.track_split_btn.getButtonIcon())));
+			btnSplitTrack.setContentAreaFilled(false);
+			btnSplitTrack.setBorder(null);
+			btnSplitTrack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					handleSplit();
+				}
+			});
+			toolBar.add(btnSplitTrack);
+	
+			btnMergeTrack = new JButton("");
+			btnMergeTrack.setBorder(null);
+			btnMergeTrack.setContentAreaFilled(false);
+			btnMergeTrack.setMaximumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
+			btnMergeTrack.setMinimumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
+			btnMergeTrack.setPreferredSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
+			btnMergeTrack.setToolTipText(trackmodification_plugin.track_merge_btn.getButtonToolTip());
+			btnMergeTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(trackmodification_plugin.track_merge_btn.getButtonIcon())));
+			btnMergeTrack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					handleMerge();
+				}
+			});
+			toolBar.add(btnMergeTrack);
+	
+			btnCompressTrack = new JButton("");
+			btnCompressTrack.setMaximumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
+			btnCompressTrack.setMinimumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
+			btnCompressTrack.setPreferredSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
+			btnCompressTrack
+					.setToolTipText(trackmodification_plugin.track_compress_btn.getButtonToolTip());
+			btnCompressTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(trackmodification_plugin.track_compress_btn.getButtonIcon())));
+			btnCompressTrack.setContentAreaFilled(false);
+			btnCompressTrack.setBorder(null);
+			btnCompressTrack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					trackmodification_plugin.track_compress_btn.buttonClicked(uiController);;
+				}
+			});
+			toolBar.add(btnCompressTrack);
+		}
+		//---------------------------------------------------------------------
 		btnUpdateElevations = new JButton("");
 		btnUpdateElevations.setMaximumSize(new Dimension(20, 20));
 		btnUpdateElevations.setMinimumSize(new Dimension(20, 20));
@@ -1315,14 +1323,18 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		menuBar.add(fileMenu);
 
 		trackMenu.setText(International.getText("menu.Track"));
-
-		jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
-		jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItemReverseActionPerformed(evt);
-			}
-		});
-
+		
+		// -------------------------------------------------------------------------------------------------
+		// some modifications for track handling menu (split merge reverse compress)
+		if(trackmodification_plugin != null) {
+			jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
+			jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					jMenuItemReverseActionPerformed(evt);
+				}
+			});
+		}
+		
 		mntmNew = new JMenuItem(International.getText("menu.Track.New"));
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1331,30 +1343,34 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		trackMenu.add(mntmNew);
 		trackMenu.addSeparator();
-		trackMenu.add(jMenuItemReverse);
+		if(trackmodification_plugin != null)
+			trackMenu.add(jMenuItemReverse);
 
 		menuBar.add(trackMenu);
-
-		mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
-				+ "...");
-		mntmSplit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				handleSplit();
-
-			}
-		});
-		trackMenu.add(mntmSplit);
-
-		mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
-				+ "...");
-		mntmMerge.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				handleMerge();
-
-			}
-		});
-		trackMenu.add(mntmMerge);
-		trackMenu.addSeparator();
+		
+		if(trackmodification_plugin != null) {
+			mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
+					+ "...");
+			mntmSplit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					handleSplit();
+	
+				}
+			});
+			trackMenu.add(mntmSplit);
+	
+			mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
+					+ "...");
+			mntmMerge.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					handleMerge();
+	
+				}
+			});
+			trackMenu.add(mntmMerge);
+			trackMenu.addSeparator();
+		}
+		
 
 		JMenuItem mntmUpdateElevation = new JMenuItem(
 				International.getText("menu.Track.Update_Elevation"));
@@ -1364,14 +1380,17 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 
-		mntmCompress = new JMenuItem(
-				International.getText("menu.Track.Compress") + "...");
-		mntmCompress.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.compress();
-			}
-		});
-		trackMenu.add(mntmCompress);
+		if(trackmodification_plugin != null) {
+			mntmCompress = new JMenuItem(
+					International.getText("menu.Track.Compress") + "...");
+			mntmCompress.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					uiController.compress();
+				}
+			});
+			trackMenu.add(mntmCompress);
+		}
+		// -------------------------------------------------------------------------------------------------
 		trackMenu.add(mntmUpdateElevation);
 
 		JMenuItem mntmCorrectPoints = new JMenuItem(

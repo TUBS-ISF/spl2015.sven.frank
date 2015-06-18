@@ -21,12 +21,18 @@ Orte der Funktionalität:
 
 - Speichern vom aktuellen Bildausschnitt als PNG kann nun auch als Plugin eingebunden werden
 
-Folgende Funktionen müssen noch umgesetzt werden als Plugins:
+Folgende Funktionen wurden ebenfalls als "Plugins" umgesetzt:
 
 - Track teilbar in zwei einzelne Tracks 
 - Tracks zusammenführen 
 - Track umkehren 
 - Track komprimieren
+
+Hierbei handelt es sich zwar um einzelne Features, welche jedoch über ein übergeordneted Plugin
+"TrackModification" zusammenverwaltet werden. Denn diese Features stehen in nahem Zusammenhang bzgl.
+ihrer Funktion. Somit muss lediglich eine Instanz von "TrackModificationButtons" erzeugt werden und
+anschließend dessen Funktion "initButtons" aufgerufen werden. Dadurch werden die "Sub-Plugins" dann
+instanziiert.
 
 Test: Ein Test der verschiedenen Konfigurationen, wurde an dieser Stelle ausgelassen, da die Features 
 von einander unabhängig sind. Jedes der Featrues kann eigenständig an- oder abgeschaltet werden über die
