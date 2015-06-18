@@ -75,6 +75,7 @@ import jgpstrackedit.map.tiledownload.TileDownload;
 import jgpstrackedit.map.util.MapExtract;
 import jgpstrackedit.map.util.MapExtractManager;
 import jgpstrackedit.map.util.TileNumber;
+import jgpstrackedit.view.buttons.SaveMapExtractButton;
 import jgpstrackedit.view.buttons.SaveTrackAsButton;
 import jgpstrackedit.view.buttons.SaveTrackButton;
 import jgpstrackedit.view.util.ColorEditor;
@@ -89,8 +90,6 @@ import jgpstrackedit.util.Parser;
  */
 class Conf {
 	public static boolean OnlyOSM = true;
-	public static boolean SavePossibility = false;
-	public static boolean MapTileDownload = false;
 }
 
 
@@ -159,6 +158,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	// plugins
 	private SaveTrackButton savetrack_plugin;
 	private SaveTrackAsButton savetrackas_plugin;
+	private SaveMapExtractButton savemapextract_plugin;
 	
 	//-------------------------------------------------
 	/**
@@ -227,6 +227,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		
 		this.savetrackas_plugin = new SaveTrackAsButton();
 		savetrackas_plugin.setApplication(this);
+		
+		//this.savemapextract_plugin = new SaveMapExtractButton();
+		//savemapextract_plugin.setApplication(this);
 		
 		//-------------------------------------------------
 		Configuration.addConfigurationObserver(this);
@@ -993,25 +996,23 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		toolBar.add(btnNewButton_3);
 
 		// -------------------------------------------------------------------------------------------------
-		// added: functionality to disable "download map tile"
-		JButton btnNewButton_4 = new JButton("");
-		btnNewButton_4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.saveMapExtract();
-			}
-		});
-		btnNewButton_4.setToolTipText(International
-				.getText("Save_current_map_extract"));
-		btnNewButton_4.setPreferredSize(new Dimension(20, 20));
-		btnNewButton_4.setMinimumSize(new Dimension(20, 20));
-		btnNewButton_4.setMaximumSize(new Dimension(20, 20));
-		btnNewButton_4.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/photo_add.png")));
-		btnNewButton_4.setContentAreaFilled(false);
-		btnNewButton_4.setBorder(null);
-		toolBar.add(btnNewButton_4);
-		if(!Conf.MapTileDownload) {
-			btnNewButton_4.setEnabled(false);
+		// added: functionality to include function "save map extract" via plugin
+		if(savemapextract_plugin != null) {
+			JButton btnNewButton_4 = new JButton("");
+			btnNewButton_4.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savemapextract_plugin.buttonClicked(uiController);
+				}
+			});
+			btnNewButton_4.setToolTipText(savemapextract_plugin.getButtonToolTip());
+			btnNewButton_4.setPreferredSize(savemapextract_plugin.getButtonDimension());
+			btnNewButton_4.setMinimumSize(savemapextract_plugin.getButtonDimension());
+			btnNewButton_4.setMaximumSize(savemapextract_plugin.getButtonDimension());
+			btnNewButton_4.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(savemapextract_plugin.getButtonIcon())));
+			btnNewButton_4.setContentAreaFilled(false);
+			btnNewButton_4.setBorder(null);
+			toolBar.add(btnNewButton_4);
 		}
 		// -------------------------------------------------------------------------------------------------
 		toolBar.add(btnPanNorth);
@@ -1294,9 +1295,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				mntmSaveMapViewActionPerformed(arg0);
 			}
 		});
-		if(!Conf.MapTileDownload) {
-			mntmSaveMapView.setEnabled(false);
-		}
 		fileMenu.add(mntmSaveMapView);
 		// -------------------------------------------------------------------------------------------------
 
@@ -1620,18 +1618,17 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable "save map tile"
-		JMenuItem mntmSaveCurrentMap = new JMenuItem(
-				International.getText("menu.View.Save_current_map_extract")
-						+ "...");
-		mntmSaveCurrentMap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.saveMapExtract();
-			}
-		});
-		if(!Conf.MapTileDownload) {
-			mntmSaveCurrentMap.setEnabled(false);
+		if(savemapextract_plugin != null) {
+			JMenuItem mntmSaveCurrentMap = new JMenuItem(
+					International.getText("menu.View.Save_current_map_extract")
+							+ "...");
+			mntmSaveCurrentMap.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savemapextract_plugin.buttonClicked(uiController);
+				}
+			});
+			mnView.add(mntmSaveCurrentMap);
 		}
-		mnView.add(mntmSaveCurrentMap);
 		// -------------------------------------------------------------------------------------------------
 		mnView.addSeparator();
 
@@ -1909,12 +1906,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				International.getText("menu.TileDown.Tile_Download"));
 		menuBar.add(mnTiledownload);
 
-		// -------------------------------------------------------------------------------------------------
-		// added: functionality to disable "save map tile"
-		if(!Conf.MapTileDownload) {
-			mnTiledownload.setEnabled(false);
-		}
-		// -------------------------------------------------------------------------------------------------
 		mntmStartTileDownload = new JMenuItem(
 				International.getText("menu.TileDown.Start_Tile_Download_Mode"));
 		mntmStartTileDownload.addActionListener(new ActionListener() {
