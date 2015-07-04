@@ -632,21 +632,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// modifactions for track modification plugin
 		// TODO:
 		if(trackmodification_plugin != null) {
-			btnReverseTrack = new JButton("");
-			btnReverseTrack.setBorder(null);
-			btnReverseTrack.setContentAreaFilled(false);
-			btnReverseTrack.setMaximumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setMinimumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setPreferredSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setToolTipText(trackmodification_plugin.track_reverse_btn.getButtonToolTip());
-			btnReverseTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_reverse_btn.getButtonIcon())));
-			btnReverseTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					trackmodification_plugin.track_reverse_btn.buttonClicked(uiController);
-				}
-			});
-			toolBar.add(btnReverseTrack);
 	
 			btnSplitTrack = new JButton("");
 			btnSplitTrack.setMaximumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
@@ -1264,16 +1249,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		trackMenu.setText(International.getText("menu.Track"));
 		
 		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)
-		if(trackmodification_plugin != null) {
-			jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
-			jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					jMenuItemReverseActionPerformed(evt);
-				}
-			});
-		}
-		
+		// some modifications for track handling menu (split merge reverse compress)	
 		mntmNew = new JMenuItem(International.getText("menu.Track.New"));
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1282,8 +1258,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		trackMenu.add(mntmNew);
 		trackMenu.addSeparator();
-		if(trackmodification_plugin != null)
-			trackMenu.add(jMenuItemReverse);
 
 		menuBar.add(trackMenu);
 		
