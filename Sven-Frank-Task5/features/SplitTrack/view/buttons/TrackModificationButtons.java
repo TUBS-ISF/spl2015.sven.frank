@@ -8,6 +8,7 @@ public class TrackModificationButtons implements ITrackModificationPlugin {
 	@Override
 	public void initButtons(JGPSTrackEdit app) {
 		// TODO Auto-generated method stub
+		orignal(app);
 		track_split_btn = new TrackSplitButton();
 		track_split_btn.setApplication(app);
 	}

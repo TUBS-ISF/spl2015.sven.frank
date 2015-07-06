@@ -218,18 +218,15 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
 		own = this;
-		//-------------------------------------------------
-		// init plugins
-		
+
 		this.savemapextract_plugin = new SaveMapExtractButton();
 		savemapextract_plugin.setApplication(this);
 		
 		this.savemapimage_plugin = new SaveMapAsImageButton();
 		savemapimage_plugin.setApplication(this);
 		
-		this.trackmodification_plugin = new TrackModificationButtons();
-		trackmodification_plugin.initButtons(this);
-		//-------------------------------------------------
+		
+
 		Configuration.addConfigurationObserver(this);
 		MapExtractManager.load();
 		International.initialize(Configuration.getProperty("LOCALE"));
@@ -453,6 +450,23 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		}
 
 	}
+	
+	//feature function which are overwritten
+	private void addSaveButtons(JToolBar toolBar) {}
+	private void initSaveMenus() {};
+	private void addSaveMenus(JMenuItem saveMenuItem, JMenuItem saveAsMenuItem, JMenu fileMenu) {}
+	
+	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) {}
+	private void addSplitMenu(JMenu trackMenu) {}
+	
+	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) {}
+	private void addSplitMenu(JMenu trackMenu) {}
+	private void addMergeButton(JButton btnMergeTrack, JToolBar toolBar) {}
+	private void addMergeMenu(JMenu trackMenu) {}
+	private void addCompressButton(JButton btnCompressTrack, JToolBar toolBar) {}
+	private void addCompressMenu(JMenu trackMenu) {}
+	private void addReverseButton(JButton btnSplitTrack, JToolBar toolBar) {}
+	private void addReverseMenu(JMenu trackMenu) {}
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -486,7 +500,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		fileMenu = new javax.swing.JMenu();
 		openMenuItem = new javax.swing.JMenuItem();
 		
-
+		initSaveMenus();
+		
 		exitMenuItem = new javax.swing.JMenuItem();
 		trackMenu = new javax.swing.JMenu();
 		jMenuItemReverse = new javax.swing.JMenuItem();
@@ -581,6 +596,10 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		toolBar.add(btnNewButton_1);
 		toolBar.addSeparator();
 		
+		//---------------------------------------------------------------------
+		// modifactions for save/save_as plugin
+		addSaveButtons(toolBar);
+		//---------------------------------------------------------------------
 
 		btnConfiguration = new JButton("");
 		btnConfiguration.setBorder(null);
@@ -630,57 +649,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		toolBar.add(btnNewTrack);
 		//---------------------------------------------------------------------
 		// modifactions for track modification plugin
-		// TODO:
 		if(trackmodification_plugin != null) {
-	
-			btnSplitTrack = new JButton("");
-			btnSplitTrack.setMaximumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setMinimumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setPreferredSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setToolTipText(trackmodification_plugin.track_split_btn.getButtonToolTip());
-			btnSplitTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_split_btn.getButtonIcon())));
-			btnSplitTrack.setContentAreaFilled(false);
-			btnSplitTrack.setBorder(null);
-			btnSplitTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleSplit();
-				}
-			});
-			toolBar.add(btnSplitTrack);
-	
-			btnMergeTrack = new JButton("");
-			btnMergeTrack.setBorder(null);
-			btnMergeTrack.setContentAreaFilled(false);
-			btnMergeTrack.setMaximumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setMinimumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setPreferredSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setToolTipText(trackmodification_plugin.track_merge_btn.getButtonToolTip());
-			btnMergeTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_merge_btn.getButtonIcon())));
-			btnMergeTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleMerge();
-				}
-			});
-			toolBar.add(btnMergeTrack);
-	
-			btnCompressTrack = new JButton("");
-			btnCompressTrack.setMaximumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack.setMinimumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack.setPreferredSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack
-					.setToolTipText(trackmodification_plugin.track_compress_btn.getButtonToolTip());
-			btnCompressTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_compress_btn.getButtonIcon())));
-			btnCompressTrack.setContentAreaFilled(false);
-			btnCompressTrack.setBorder(null);
-			btnCompressTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					trackmodification_plugin.track_compress_btn.buttonClicked(uiController);;
-				}
-			});
-			toolBar.add(btnCompressTrack);
+			addReverseButton(btnReverseTrack, toolBar);
+			addSplitButton(btnSplitTrack, toolBar);
+			addMergeButton(btnMergeTrack, toolBar);
+			addCompressButton(btnCompressTrack, toolBar);
 		}
 		//---------------------------------------------------------------------
 		btnUpdateElevations = new JButton("");
@@ -1174,19 +1147,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		fileMenu.add(mntmOpenDirectory);
 		fileMenu.addSeparator();
 		//-------------------------------------------------------------
-		if(savetrack_plugin != null) {
-			saveMenuItem.setText(International.getText("menu.File.Save"));
-			fileMenu.add(saveMenuItem);
-		}
+		// add feature functions for save/save_as
+		addSaveMenus(saveMenuItem, saveAsMenuItem, fileMenu);
+		
 		//-------------------------------------------------------------
-		saveAsMenuItem.setText(International.getText("menu.File.Save_As")
-				+ "...");
-		saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				saveAsMenuItemActionPerformed(evt);
-			}
-		});
-		fileMenu.add(saveAsMenuItem);
+		
 
 		exitMenuItem.setText(International.getText("menu.File.Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1258,32 +1223,18 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		trackMenu.add(mntmNew);
 		trackMenu.addSeparator();
-
+		
+		// add reverse menu function
+		addReverseMenu(trackMenu);
+		
 		menuBar.add(trackMenu);
 		
-		if(trackmodification_plugin != null) {
-			mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
-					+ "...");
-			mntmSplit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleSplit();
-	
-				}
-			});
-			trackMenu.add(mntmSplit);
-	
-			mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
-					+ "...");
-			mntmMerge.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					handleMerge();
-	
-				}
-			});
-			trackMenu.add(mntmMerge);
-			trackMenu.addSeparator();
-		}
-		
+		// add track modification menus (split and merge)
+		if(trackmodification_plugin != null)
+		{
+			addSplitMenu(trackMenu);
+			addMergeMenu(trackMenu);
+		}		
 
 		JMenuItem mntmUpdateElevation = new JMenuItem(
 				International.getText("menu.Track.Update_Elevation"));
@@ -1293,15 +1244,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 
+		// add track modification menus (compress)
 		if(trackmodification_plugin != null) {
-			mntmCompress = new JMenuItem(
-					International.getText("menu.Track.Compress") + "...");
-			mntmCompress.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					uiController.compress();
-				}
-			});
-			trackMenu.add(mntmCompress);
+			addCompressMenu(trackMenu);
 		}
 		// -------------------------------------------------------------------------------------------------
 		trackMenu.add(mntmUpdateElevation);
@@ -2135,8 +2080,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private javax.swing.JTextField jTextFieldStateMessage;
 	private javax.swing.JMenuBar menuBar;
 	private javax.swing.JMenuItem openMenuItem;
-	private javax.swing.JMenuItem saveAsMenuItem;
-	private javax.swing.JMenuItem saveMenuItem;
 	private javax.swing.JMenu trackMenu;
 	private JMenuItem mntmConfiguration;
 	private JMenu mnPoints;

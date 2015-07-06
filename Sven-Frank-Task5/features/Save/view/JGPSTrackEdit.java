@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JToolBar;
 
 import jgpstrackedit.view.buttons.SaveTrackAsButton;
 import jgpstrackedit.view.buttons.SaveTrackButton;
@@ -21,34 +24,20 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
-		own = this;
-		//-------------------------------------------------
-		// init plugins
 		this.savetrack_plugin = new SaveTrackButton();
 		savetrack_plugin.setApplication(this);
 		
 		this.savetrackas_plugin = new SaveTrackAsButton();
 		savetrackas_plugin.setApplication(this);
-	}
-
-	private void initComponents() {
 		
-		// -------------------------------------------------------------------------------------------------
-		// added: save
-		saveMenuItem = new javax.swing.JMenuItem();
-		if(savetrack_plugin != null) {
-			saveMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					savetrack_plugin.buttonClicked(uiController);
-				}
-			});
-		}
-		saveAsMenuItem = new javax.swing.JMenuItem();
-
-		// -------------------------------------------------------------------------------------------------
-
-		// -------------------------------------------------------------------------------------------------
-		// added: save_as
+		original();
+	}
+	
+	private void addSaveButtons(JToolBar toolBar) 
+	{
+		orginal(toolBar);
+		
+		// save as
 		JButton btnNewButton = new JButton("");
 		if(savetrackas_plugin != null) {
 			btnNewButton.setBorder(null);
@@ -65,11 +54,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				}
 			});
 		}
-		// -------------------------------------------------------------------------------------------------
 		
-		// -------------------------------------------------------------------------------------------------
-		// added: save_track
-		
+		// save track
 		jButtonSave = new javax.swing.JButton();
 		if(savetrack_plugin != null) {
 			jButtonSave.setBorder(null);
@@ -89,10 +75,27 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		}
 		if(savetrackas_plugin != null)
 			toolBar.add(btnNewButton);
-		// -------------------------------------------------------------------------------------------------
+	}
+	
+	private void initSaveMenus() 
+	{
+		orginal();
 		
-
-		//-------------------------------------------------------------
+		saveMenuItem = new javax.swing.JMenuItem();
+		if(savetrack_plugin != null) {
+			saveMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savetrack_plugin.buttonClicked(uiController);
+				}
+			});
+		}
+		saveAsMenuItem = new javax.swing.JMenuItem();
+	}
+	
+	private void addSaveMenus(JMenuItem saveMenuItem, JMenuItem saveAsMenuItem, JMenu fileMenu) 
+	{
+		original(saveMenuItem, saveAsMenuItem, fileMenu);
+		
 		if(savetrack_plugin != null) {
 			saveMenuItem.setText(International.getText("menu.File.Save"));
 			fileMenu.add(saveMenuItem);
@@ -109,9 +112,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			fileMenu.add(saveAsMenuItem);
 		}
-		//-------------------------------------------------------------
-		pack();
 	}
+	
 	
 	private javax.swing.JMenuItem saveAsMenuItem;
 	private javax.swing.JMenuItem saveMenuItem;

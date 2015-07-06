@@ -93,21 +93,19 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
-		own = this;
-		//-------------------------------------------------
-		// init plugins		
-		this.trackmodification_plugin = new TrackModificationButtons();
-		trackmodification_plugin.initButtons(this);
-		//-------------------------------------------------
+		if(this.trackmodification_plugin == null){
+			this.trackmodification_plugin = new TrackModificationButtons();
+			trackmodification_plugin.initButtons(this);
+		}
+		
+		orginal();
 	}
-
-	private void initComponents() {
-
-		//---------------------------------------------------------------------
-		// modifactions for track modification plugin
-		// TODO:
-		if(trackmodification_plugin != null) {
 	
+	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) 
+	{
+		orginal(btnSplitTrack, toolBar);
+		if(trackmodification_plugin != null) {
+			
 			btnSplitTrack = new JButton("");
 			btnSplitTrack.setMaximumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
 			btnSplitTrack.setMinimumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
@@ -124,25 +122,19 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			toolBar.add(btnSplitTrack);
 		}
-		//---------------------------------------------------------------------
-		
-		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)	
+	}
+	
+	private void addSplitMenu(JMenu trackMenu) {		
 		if(trackmodification_plugin != null) {
 			mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
 					+ "...");
 			mntmSplit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					handleSplit();
-	
 				}
 			});
 			trackMenu.add(mntmSplit);
-
-		}
-		// -------------------------------------------------------------------------------------------------
-		
-		pack();
+		}		
 	}	
 
 	protected void handleSplit() {

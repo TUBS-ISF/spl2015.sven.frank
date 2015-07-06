@@ -93,21 +93,18 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
-		own = this;
-		//-------------------------------------------------
-		// init plugins		
-		this.trackmodification_plugin = new TrackModificationButtons();
-		trackmodification_plugin.initButtons(this);
-		//-------------------------------------------------
+		if(this.trackmodification_plugin == null){
+			this.trackmodification_plugin = new TrackModificationButtons();
+			trackmodification_plugin.initButtons(this);
+		}
+		
+		orginal();
 	}
-
-	private void initComponents() {
-
-		//---------------------------------------------------------------------
-		// modifactions for track modification plugin
-		// TODO:
-		if(trackmodification_plugin != null) {
 	
+	private void addMergeMenu (JButton btnMergeTrack, JToolBar toolBar){
+		original(btnMergeTrack, toolBar);
+		if(trackmodification_plugin != null) {
+			
 			btnMergeTrack = new JButton("");
 			btnMergeTrack.setBorder(null);
 			btnMergeTrack.setContentAreaFilled(false);
@@ -124,10 +121,10 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			toolBar.add(btnMergeTrack);
 		}
-		//---------------------------------------------------------------------
-		
-		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)			
+	}
+	
+	private void addMergeMenu(JMenu trackMenu) {
+		original(trackMenu);
 		if(trackmodification_plugin != null) {
 			mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
 					+ "...");
@@ -140,9 +137,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			trackMenu.add(mntmMerge);
 			trackMenu.addSeparator();
 		}
-		// -------------------------------------------------------------------------------------------------
-		
-		pack();
 	}	
 
 	protected void handleMerge() {

@@ -109,18 +109,18 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private TrackModificationButtons trackmodification_plugin;
 
 	public JGPSTrackEdit() {
-		own = this;
-
-		this.trackmodification_plugin = new TrackModificationButtons();
-		trackmodification_plugin.initButtons(this);
-
+		if(this.trackmodification_plugin == null){
+			this.trackmodification_plugin = new TrackModificationButtons();
+			trackmodification_plugin.initButtons(this);
+		}
+		
+		orginal();
 	}
 
-	private void initComponents() {
+	private void addReverseButton(JButton btnReverseTrack, JToolBar toolBar)
+	{
+		orginal(btnReverseTrack, toolBar);
 		
-		//---------------------------------------------------------------------
-		// modifactions for track modification plugin
-		// TODO:
 		if(trackmodification_plugin != null) {
 			btnReverseTrack = new JButton("");
 			btnReverseTrack.setBorder(null);
@@ -138,10 +138,10 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			toolBar.add(btnReverseTrack);
 		}
-		//---------------------------------------------------------------------
-		
-		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)
+	}
+	private void addReverseMenu(JMenu trackMenu) 
+	{
+		orginal(trackMenu);
 		if(trackmodification_plugin != null) {
 			jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
 			jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
@@ -153,12 +153,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		
 		if(trackmodification_plugin != null)
 			trackMenu.add(jMenuItemReverse);
-
-		// -------------------------------------------------------------------------------------------------
-		pack();
 	}
 
-	
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private JButton btnReverseTrack;

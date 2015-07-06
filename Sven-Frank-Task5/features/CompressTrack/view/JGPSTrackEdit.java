@@ -93,21 +93,19 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
-		own = this;
-		//-------------------------------------------------
-		// init plugins		
-		this.trackmodification_plugin = new TrackModificationButtons();
-		trackmodification_plugin.initButtons(this);
-		//-------------------------------------------------
+		if(this.trackmodification_plugin == null){
+			this.trackmodification_plugin = new TrackModificationButtons();
+			trackmodification_plugin.initButtons(this);
+		}
+		
+		orginal();
 	}
 
-	private void initComponents() {
-
-		//---------------------------------------------------------------------
-		// modifactions for track modification plugin
-		// TODO:
+	private void addCompressButton(JButton btnCompressTrack, JToolBar toolBar) 
+	{
+		original(btnCompressTrack, toolBar);
 		if(trackmodification_plugin != null) {
-	
+			
 			btnCompressTrack = new JButton("");
 			btnCompressTrack.setMaximumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
 			btnCompressTrack.setMinimumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
@@ -125,10 +123,9 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			toolBar.add(btnCompressTrack);
 		}
-		//---------------------------------------------------------------------
-		
-		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)	
+	}
+	private void addCompressMenu(JMenu trackMenu) {
+		original(trackMenu);
 		if(trackmodification_plugin != null) {
 			mntmCompress = new JMenuItem(
 					International.getText("menu.Track.Compress") + "...");
@@ -139,9 +136,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			});
 			trackMenu.add(mntmCompress);
 		}
-		// -------------------------------------------------------------------------------------------------
-		
-		pack();
 	}	
 
 	private JMenuItem mntmCompress;
