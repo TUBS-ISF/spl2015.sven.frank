@@ -12,12 +12,12 @@ ein Parameter umgestellt, wodurch sämtliche Schaltflächen in der Anwendung ausge
 oder nicht angezeigt werden. In diesem Fall im Kontextmenü und in der oberen Schaltleiste.
 Ebenfalls funktionieren keine Shortcuts mehr für diese Funktionen
 
-- Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
+- TODO: Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
 lediglich zwei Kartenanbieter zur Verfügung gestellt (OpenStreetMap und OpenCycleMap). Dadurch 
 entfällt die Anbindung an Google. Ausgewählt werden können die Karten über das Kontextmenü
 unter 'Ansicht-> Karten'
 
-- Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
+- TODO: Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
 ist es möglich aktuelle Kartenauschnitte als Bilder zu speichern. Dadurch können diese Dateien dann
 auch offline auf anderen Geräten angeschaut werden.
 Orte der Funktionalität:
@@ -26,17 +26,12 @@ Orte der Funktionalität:
 	- 'Ansicht -> Aktuellen Kartenausschnitt speichern'
 	- 'Kacheldownload'
 
-Folgende Funktionen wurde hinzugefügt und sind über Präprozessor Direktiven steuerbar:
+Folgende Funktionen wurde hinzugefügt und sind über Featureanwahl steuerbar:
 
 - Track teilbar in zwei einzelne Tracks
 - Tracks zusammenführen 
 - Track umkehren 
 - Track komprimieren 
-
-Test: Ein Test der verschiedenen Konfigurationen, wurde an dieser Stelle ausgelassen, da die Features 
-von einander unabhängig sind. Jedes der Featrues kann eigenständig an- oder abgeschaltet werden über 
-entsprechendes Define.
-
 
 ANMERKUNG: Sämtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarblöcke der 
 folgenden Art gekennzeichnet:
