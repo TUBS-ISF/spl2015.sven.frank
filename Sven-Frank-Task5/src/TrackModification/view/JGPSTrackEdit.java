@@ -565,8 +565,6 @@ public   class  JGPSTrackEdit  extends javax.swing.JFrame  implements ListSelect
 	
 	private void initSaveMenus() {}
 
-	;
-
 	
 	private void addSaveMenus(JMenuItem saveMenuItem, JMenuItem saveAsMenuItem, JMenu fileMenu) {}
 
@@ -634,6 +632,8 @@ public   class  JGPSTrackEdit  extends javax.swing.JFrame  implements ListSelect
 			toolBar.add(btnSplitTrack);
 		}
 	}
+
+	;
 
 	
 	

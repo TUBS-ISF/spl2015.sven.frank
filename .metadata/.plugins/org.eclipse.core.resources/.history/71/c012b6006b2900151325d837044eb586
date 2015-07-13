@@ -1,0 +1,17 @@
+import jgpstrackedit.view.buttons.SaveTrackAsButton;
+import jgpstrackedit.view.buttons.SaveTrackButton;
+
+public aspect Save {
+	private SaveTrackButton savetrack_plugin;
+	private SaveTrackAsButton savetrackas_plugin;
+
+	before() : call (* JGPSTrackEdit.JGPSTrackEdit()) {
+		
+		this.savetrack_plugin = new SaveTrackButton();
+		savetrack_plugin.setApplication(this());
+		
+		this.savetrackas_plugin = new SaveTrackAsButton();
+		savetrackas_plugin.setApplication(this());
+	}
+	
+}

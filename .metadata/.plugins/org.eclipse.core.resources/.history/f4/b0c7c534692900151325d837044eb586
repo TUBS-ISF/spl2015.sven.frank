@@ -1,0 +1,6 @@
+
+public aspect Save {
+	void before() : call (JGPSTrackEdit.JGPSTrackEdit()) 
+	{}
+	
+}

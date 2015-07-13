@@ -453,13 +453,13 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	
 	//feature function which are overwritten
 	private void addSaveButtons(JToolBar toolBar) {}
-	private void initSaveMenus() {};
+	private void initSaveMenus() {}
 	private void addSaveMenus(JMenuItem saveMenuItem, JMenuItem saveAsMenuItem, JMenu fileMenu) {}
 	
 	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) {}
 	private void addSplitMenu(JMenu trackMenu) {}
 	
-	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) {}
+	private void addSplitButton(JButton btnSplitTrack, JToolBar toolBar) {};
 	private void addSplitMenu(JMenu trackMenu) {}
 	private void addMergeButton(JButton btnMergeTrack, JToolBar toolBar) {}
 	private void addMergeMenu(JMenu trackMenu) {}

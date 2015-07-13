@@ -1,8 +1,8 @@
 # Lists all features from the model with manual (first digit) and automatic (second digit) selection
 # 0 = deselected, 1 = selected, 2 = undefined
-21SvenFrankTask6
-21JGPSTrackEdit
-11TrackModification
+21SvenFrankTask5
+11JGPSTrackEdit
+21TrackModification
 12SplitTrack
 12MergeTrack
 12ReverseTrack
@@ -10,9 +10,9 @@
 21FileOptions
 21FileTypes
 12GPX
-21Actions
-21Open
-22Save
+11Actions
+11Open
+12Save
 22Maps
 22OSM
 22GoogleMaps

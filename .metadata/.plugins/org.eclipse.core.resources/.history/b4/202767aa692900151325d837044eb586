@@ -1,0 +1,14 @@
+import jgpstrackedit.view.buttons.SaveMapAsImageButton;
+import jgpstrackedit.view.buttons.SaveMapExtractButton;
+
+
+public aspect Save {
+	void before() : call (JGPSTrackEdit.JGPSTrackEdit()) {
+		this.savemapextract_plugin = new SaveMapExtractButton();
+		savemapextract_plugin.setApplication(this);
+		
+		this.savemapimage_plugin = new SaveMapAsImageButton();
+		savemapimage_plugin.setApplication(this);
+	}
+	
+}

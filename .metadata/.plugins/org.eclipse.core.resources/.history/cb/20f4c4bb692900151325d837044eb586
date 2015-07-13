@@ -1,0 +1,17 @@
+
+
+
+public aspect Save {
+	void before() : call (JGPSTrackEdit.JGPSTrackEdit()) {
+		
+		private SaveTrackButton savetrack_plugin;
+		private SaveTrackAsButton savetrackas_plugin;
+		
+		this.savemapextract_plugin = new SaveMapExtractButton();
+		savemapextract_plugin.setApplication(this);
+		
+		this.savemapimage_plugin = new SaveMapAsImageButton();
+		savemapimage_plugin.setApplication(this);
+	}
+	
+}

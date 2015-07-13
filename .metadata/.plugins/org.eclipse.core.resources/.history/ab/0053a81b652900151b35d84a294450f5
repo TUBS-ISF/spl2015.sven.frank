@@ -1,0 +1,7 @@
+public aspect SplitTrack {
+
+	after(): call(void Main.print()) {
+		System.out.print(" world!");
+	}
+
+}

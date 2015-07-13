@@ -1,0 +1,19 @@
+import jgpstrackedit.view.buttons.SaveTrackAsButton;
+import jgpstrackedit.view.buttons.SaveTrackButton;
+import jgpstrackedit.view.JGPSTrackEdit;
+
+public aspect Save {
+	//private SaveTrackButton savetrack_plugin;
+	//private SaveTrackAsButton savetrackas_plugin;
+
+	pointcut loadSavePlugins () :
+		withincode(* JGPSTrackEdit.JGPSTrackEdit(..));
+	
+	before() : loadSavePlugins() {
+		
+		JGPSTrackEdit.savetrack_plugin = new SaveTrackButton();
+		
+		JGPSTrackEdit.savetrackas_plugin = new SaveTrackAsButton();
+	}
+	
+}
