@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel chosenLayoutAlgorithm="1">
+		<struct>
+			<and abstract="true" mandatory="true" name="SvenFrankTask5">
+				<and mandatory="true" name="JGPSTrackEdit">
+					<and abstract="true" name="TrackModification">
+						<description>
+							Track interactions to modify opened track or to creat new routes
+						</description>
+						<feature name="InsertPoints"/>
+						<feature name="AppendPoints"/>
+						<feature name="MovePoints"/>
+						<feature name="DeletePoints"/>
+						<feature name="SplitTrack">
+							<description>
+								Split track into two parts
+							</description>
+						</feature>
+					</and>
+					<and abstract="true" mandatory="true" name="DataVisualization">
+						<and name="DataDiagram">
+							<description>
+								Visualization of two parameters which are connected as a diagram
+							</description>
+							<feature name="Distancealtitude "/>
+							<feature name="HeartRateTime"/>
+						</and>
+						<and mandatory="true" name="GeneralInformation">
+							<description>
+								Display general track information of a recorded track. This data is stored within the file in most cases
+							</description>
+							<feature mandatory="true" name="Time">
+								<description>
+									Total time in which the track recorded
+								</description>
+							</feature>
+							<feature mandatory="true" name="Distance">
+								<description>
+									Show distance
+								</description>
+							</feature>
+							<feature name="Altitude">
+								<description>
+									Show altitude
+									- according to time/distance over the whole track
+									- total
+								</description>
+							</feature>
+							<feature name="HeartRate">
+								<description>
+									Show heart rate 
+									- according to time over the whole track
+									- average
+								</description>
+							</feature>
+						</and>
+					</and>
+					<and abstract="true" mandatory="true" name="FileOptions">
+						<and abstract="true" name="FileTypes">
+							<description>
+								Supported gps file types
+							</description>
+							<feature mandatory="true" name="GPX">
+								<description>
+									Standard supported file type. GPX is the most often used file type to save gps data/coordinates
+								</description>
+							</feature>
+							<feature name="Other">
+								<description>
+									Other file type which shall not be support in a free basic version
+								</description>
+							</feature>
+						</and>
+						<and mandatory="true" name="Actions">
+							<description>
+								User interaction for file handling
+							</description>
+							<feature mandatory="true" name="Open">
+								<description>
+									Open a GPS-Track file
+								</description>
+							</feature>
+							<feature name="Save">
+								<description>
+									Save modified or newly created tracks.
+								</description>
+							</feature>
+						</and>
+					</and>
+					<and abstract="true" mandatory="true" name="GeneralFeatures">
+						<feature mandatory="true" name="StatusBar">
+							<description>
+								General status bar to display actual information of the program
+							</description>
+						</feature>
+						<and name="GoogleEarthIntegration">
+							<description>
+								Additional feature to visualize the route within a 3D map
+							</description>
+							<feature name="FlyOver">
+								<description>
+									Possibilty to use Google Earth to fly over a predefinied or open track.
+								</description>
+							</feature>
+						</and>
+					</and>
+					<and abstract="true" name="Maps">
+						<description>
+							Integration/access to several map hoster
+						</description>
+						<feature mandatory="true" name="OSM">
+							<description>
+								Free map hoster
+							</description>
+						</feature>
+						<feature name="GoogleMaps">
+							<description>
+								Google as map hoster
+							</description>
+						</feature>
+						<feature name="MoreMaps">
+							<description>
+								More supported map hoster (shall not be included in free/light version)
+							</description>
+						</feature>
+						<and name="MapActions">
+							<description>
+								Map interaction
+							</description>
+							<feature name="CroppedMapImages">
+								<description>
+									Possibility to download map tiles for offline usage. With or without shown track
+								</description>
+							</feature>
+							<feature mandatory="true" name="MoveMap">
+								<description>
+									Move map into specific direction
+									- up/down
+									- left/right
+								</description>
+							</feature>
+						</and>
+					</and>
+				</and>
+			</and>
+		</struct>
+		<constraints/>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>

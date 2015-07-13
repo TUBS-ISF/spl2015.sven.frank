@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="jgpstrackedit.view.Conf"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.SaveTrackButton"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionEvent"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
+<fullyQualifiedTypeName name="jgpstrackedit.control.UIController"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.ButtonPlugin"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.SaveTrackAsButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.SaveMapTileButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.SaveMapAsImageButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.MenuItemCleanPlugin"/>
+<fullyQualifiedTypeName name="java.awt.Dimension"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.TrackCompressButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.TrackModificationPlugin"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.TrackModificationButtons"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.TrackMergeButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.TrackSplitButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.JGPSTrackEdit"/>
+<fullyQualifiedTypeName name="jgpstrackedit.view.buttons.TrackReverseButton"/>
+<fullyQualifiedTypeName name="jgpstrackedit.map.tilehandler.AbstractDiskTileCommand"/>
+</qualifiedTypeNameHistroy>

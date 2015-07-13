@@ -1,0 +1,10 @@
+/AbstractGoogleTileManager.java
+/AbstractOSMTileManager.java
+/FourUMapsTileManager.java
+/GoogleMapHybridTileManager.java
+/GoogleMapSatelliteTileManager.java
+/GoogleMapTerrainTileManager.java
+/GoogleMapTileManager.java
+/HikeBikeTileManager.java
+/MapQuestHybrideTileManager.java
+/MapQuestSatTileManager.java

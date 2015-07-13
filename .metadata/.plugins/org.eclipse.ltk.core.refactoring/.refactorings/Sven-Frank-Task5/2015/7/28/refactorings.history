@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Sven-Frank-Task5/configs/Full.config&apos; to &apos;Light.config&apos;" description="Rename resource &apos;Full.config&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="configs/Full.config" name="Light.config" stamp="1436281429631" updateReferences="true"/>
+</session>

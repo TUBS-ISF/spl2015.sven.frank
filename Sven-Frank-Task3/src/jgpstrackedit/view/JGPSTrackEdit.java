@@ -83,12 +83,12 @@ import jgpstrackedit.util.Parser;
 //-----------------------------------------------------
 //DEFINES for Task3
 
-//define NOT_DIVIDABLE
-//define NOT_MERGEABLE
-//define NOT_REVERSIBLE
-//define NOT_COMPRESSIBLE
-//define NOT_SAVEABLE
-//define NO_MAPDOWNLOAD
+//#define NOT_DIVIDABLE
+//#define NOT_MERGEABLE
+//#define NOT_REVERSIBLE
+//#define NOT_COMPRESSIBLE
+//#define NOT_SAVEABLE
+//#define NO_MAPDOWNLOAD
 
 //#define NOT_ONLYOSM
 
@@ -487,8 +487,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		saveAsMenuItem = new javax.swing.JMenuItem();
 		//#ifdef NOT_SAVEABLE
-//@		saveMenuItem.setEnabled(false);
-//@		saveAsMenuItem.setEnabled(false);
+		saveMenuItem.setEnabled(false);
+		saveAsMenuItem.setEnabled(false);
 		//#endif
 		// -------------------------------------------------------------------------------------------------
 		exitMenuItem = new javax.swing.JMenuItem();
@@ -584,7 +584,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		//#ifdef NOT_SAVEABLE
-//@			btnNewButton.setEnabled(false);
+			btnNewButton.setEnabled(false);
 		//#endif
 		// -------------------------------------------------------------------------------------------------
 		
@@ -622,7 +622,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		//#ifdef NOT_SAVEABLE
-//@			jButtonSave.setEnabled(false);
+			jButtonSave.setEnabled(false);
 		//#endif
 		// -------------------------------------------------------------------------------------------------
 		toolBar.add(jButtonSave);
@@ -691,7 +691,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_REVERSIBLE
-//@		btnReverseTrack.setEnabled(false);
+		btnReverseTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnReverseTrack);
@@ -713,7 +713,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_DIVIDABLE
-//@		btnSplitTrack.setEnabled(false);
+		btnSplitTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnSplitTrack);
@@ -734,7 +734,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_MERGEABLE
-//@		btnMergeTrack.setEnabled(false);
+		btnMergeTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnMergeTrack);
@@ -756,7 +756,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_COMPRESSIBLE
-//@		btnCompressTrack.setEnabled(false);
+		btnCompressTrack.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		toolBar.add(btnCompressTrack);
@@ -1025,7 +1025,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		btnNewButton_4.setBorder(null);
 		toolBar.add(btnNewButton_4);
 		//#ifdef NO_MAPDOWNLOAD
-//@		btnNewButton_4.setEnabled(false);
+		btnNewButton_4.setEnabled(false);
 		//#endif
 		// -------------------------------------------------------------------------------------------------
 		toolBar.add(btnPanNorth);
@@ -1306,7 +1306,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		//#ifdef NO_MAPDOWNLOAD
-//@		mntmSaveMapView.setEnabled(false);
+		mntmSaveMapView.setEnabled(false);
 		//#endif
 		fileMenu.add(mntmSaveMapView);
 		// -------------------------------------------------------------------------------------------------
@@ -1334,7 +1334,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_REVERSIBLE
-//@		jMenuItemReverse.setEnabled(false);
+		jMenuItemReverse.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 
@@ -1360,7 +1360,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_DIVIDABLE
-//@		mntmSplit.setEnabled(false);
+		mntmSplit.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmSplit);
@@ -1375,7 +1375,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_MERGEABLE
-//@		mntmMerge.setEnabled(false);
+		mntmMerge.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmMerge);
@@ -1398,7 +1398,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		//-----------------------------------------------------
 		//#ifdef NOT_COMPRESSIBLE
-//@		mntmCompress.setEnabled(false);
+		mntmCompress.setEnabled(false);
 		//#endif
 		//-----------------------------------------------------
 		trackMenu.add(mntmCompress);
@@ -1660,7 +1660,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 		//#ifdef NO_MAPDOWNLOAD
-//@		mntmSaveCurrentMap.setEnabled(false);
+		mntmSaveCurrentMap.setEnabled(false);
 		//#endif
 		mnView.add(mntmSaveCurrentMap);
 		// -------------------------------------------------------------------------------------------------
@@ -1943,7 +1943,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable "save map tile"
 		//#ifdef NO_MAPDOWNLOAD
-//@			mnTiledownload.setEnabled(false);
+			mnTiledownload.setEnabled(false);
 		//#endif
 		// -------------------------------------------------------------------------------------------------
 		mntmStartTileDownload = new JMenuItem(

@@ -1,0 +1,6 @@
+/AbstractGoogleTileManager.java
+/.gitignore
+/AbstractOSMTileManager.java
+/FourUMapsTileManager.java
+/GoogleMapHybridTileManager.java
+/GoogleMapSatelliteTileManager.java

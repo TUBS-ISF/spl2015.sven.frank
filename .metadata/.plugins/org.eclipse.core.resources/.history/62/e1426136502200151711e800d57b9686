@@ -1,0 +1,10 @@
+/IButtonPlugin.java
+/IMenuItemCleanPlugin.java
+/ITrackModificationPlugin.java
+/SaveMapAsImageButton.java
+/SaveMapExtractButton.java
+/SaveTrackAsButton.java
+/SaveTrackButton.java
+/.gitignore
+/TrackCompressButton.java
+/TrackMergeButton.java

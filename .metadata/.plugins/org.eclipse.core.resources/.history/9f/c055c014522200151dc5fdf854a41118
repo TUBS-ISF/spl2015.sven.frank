@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel chosenLayoutAlgorithm="1">
+		<struct>
+			<and abstract="true" mandatory="true" name="SvenFrankTask5">
+				<and mandatory="true" name="JGPSTrackEdit">
+					<and abstract="true" name="TrackModification">
+						<description>
+							Track interactions to modify opened track or to creat new routes
+						</description>
+						<feature name="InsertPoints"/>
+						<feature name="MovePoints"/>
+						<feature name="DeletePoints"/>
+						<feature name="SplitTrack">
+							<description>
+								Split track into two parts
+							</description>
+						</feature>
+						<feature name="MergeTrack"/>
+						<feature name="ReverseTrack"/>
+						<feature name="CompressTrack"/>
+					</and>
+					<and abstract="true" mandatory="true" name="FileOptions">
+						<and abstract="true" name="FileTypes">
+							<description>
+								Supported gps file types
+							</description>
+							<feature mandatory="true" name="GPX">
+								<description>
+									Standard supported file type. GPX is the most often used file type to save gps data/coordinates
+								</description>
+							</feature>
+						</and>
+						<and mandatory="true" name="Actions">
+							<description>
+								User interaction for file handling
+							</description>
+							<feature mandatory="true" name="Open">
+								<description>
+									Open a GPS-Track file
+								</description>
+							</feature>
+							<feature name="Save">
+								<description>
+									Save modified or newly created tracks.
+								</description>
+							</feature>
+						</and>
+					</and>
+					<and abstract="true" name="Maps">
+						<description>
+							Integration/access to several map hoster
+						</description>
+						<feature mandatory="true" name="OSM">
+							<description>
+								Free map hoster
+							</description>
+						</feature>
+						<feature name="GoogleMaps">
+							<description>
+								Google as map hoster
+							</description>
+						</feature>
+						<feature name="MoreMaps">
+							<description>
+								More supported map hoster (shall not be included in free/light version)
+							</description>
+						</feature>
+						<and name="MapActions">
+							<description>
+								Map interaction
+							</description>
+							<feature name="CroppedMapImages">
+								<description>
+									Possibility to download map tiles for offline usage. With or without shown track
+								</description>
+							</feature>
+							<feature mandatory="true" name="MoveMap">
+								<description>
+									Move map into specific direction
+									- up/down
+									- left/right
+								</description>
+							</feature>
+						</and>
+					</and>
+				</and>
+			</and>
+		</struct>
+		<constraints/>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>

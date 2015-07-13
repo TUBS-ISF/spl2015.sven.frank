@@ -1,0 +1,1717 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * JGPSTrackEdit.java
+ *
+ * Created on 08.06.2010, 20:32:46
+ */
+package jgpstrackedit.view;
+
+/*
+ * This software is copyright Hubert Lutnik 2012 and made available through the GNU GPL version 3,
+ * see also http://www.gnu.org/copyleft/gpl.html.
+ * Usage only for non commercial purposes.
+ */
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import jgpstrackedit.config.Configuration;
+import jgpstrackedit.config.ConfigurationObserver;
+import jgpstrackedit.config.view.ConfigurationDialog;
+import jgpstrackedit.config.view.ViewingConfiguration;
+import jgpstrackedit.control.UIController;
+import jgpstrackedit.data.Database;
+import jgpstrackedit.data.Point;
+import jgpstrackedit.data.Track;
+import jgpstrackedit.data.util.TourPlaner;
+import jgpstrackedit.data.util.UnDoManager;
+import jgpstrackedit.map.TileManager;
+import jgpstrackedit.map.tiledownload.DlgProcessingTileDownload;
+import jgpstrackedit.map.tiledownload.DlgStartTiledownloadMode;
+import jgpstrackedit.map.tiledownload.DlgStopTiledownloadMode;
+import jgpstrackedit.map.tiledownload.TileDownload;
+import jgpstrackedit.map.util.MapExtract;
+import jgpstrackedit.map.util.MapExtractManager;
+import jgpstrackedit.map.util.TileNumber;
+import jgpstrackedit.view.buttons.SaveMapAsImageButton;
+import jgpstrackedit.view.buttons.SaveMapExtractButton;
+import jgpstrackedit.view.buttons.SaveTrackAsButton;
+import jgpstrackedit.view.buttons.SaveTrackButton;
+import jgpstrackedit.view.buttons.TrackModificationButtons;
+import jgpstrackedit.view.util.ColorEditor;
+import jgpstrackedit.view.util.ColorRenderer;
+import jgpstrackedit.international.International;
+import jgpstrackedit.util.Parser;
+
+/* TODO:
+ * AltitudeProfil, Sync selected Point to Map
+ - Internationalisierung (Deutsch)
+
+ */
+
+
+/**
+ * JGPSTrackEdit is a tool for editing (gps) tracks and planing (multiple days)
+ * tours. This class represent the main class, providing the main method.<br>
+ * This software is copyright Hubert Lutnik 2012,2013,2014 and made available through the
+ * GNU GPL version 3, see also http://www.gnu.org/copyleft/gpl.html. Usage only
+ * for non commercial purposes.
+ * 
+ * @author Hubert
+ */
+public class JGPSTrackEdit extends javax.swing.JFrame implements
+		ListSelectionListener, MouseListener, MouseMotionListener,
+		MouseWheelListener, ConfigurationObserver, KeyListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private TracksPanel tracksPanel;
+	private TrackPanel trackPanel;
+	private TrackDataPanel trackDataPanel;
+	private AltitudeProfilePanel altitudeProfilePanel;
+	private TracksView tracksView;
+	private UIController uiController;
+
+	private Database db;
+
+	private int selectedRowTracksTable = -1;
+	private boolean pointDeleteMode = false;
+	private boolean moveSelectedPoint = false;
+	private boolean moveSelectedPointMode = false;
+	private boolean appendMode = false;
+	private boolean appendRoutingMode = false;
+	private boolean showCoordinatesMode = false;
+	private boolean shortCut = false;
+	private boolean distanceMeasurement = false;
+	private Point distanceMeasurementFirstPoint = null;
+	private Point distanceMeasurementSecondPoint = null;
+	private Point shortCutStartPoint = null;
+	private int currentScreenX = 0;
+	private int currentScreenY = 0;
+	private int lastScreenX = 0;
+	private int lastScreenY = 0;
+	private int lastDraggedX = -1;
+	private int lastDraggedY = -1;
+	private boolean draggingActive = false;
+
+	private TileDownload tileDownload = null;
+	public static final int MODE_INACTIVE = 0;
+	public static final int MODE_WAIT_FIRST_POINT = 1;
+	public static final int MODE_WAIT_SECOND_POINT = 2;
+	private int tileSelectionMode = MODE_INACTIVE;
+	private Point tileSelectFirstPoint = null;
+
+	private ButtonGroup mapRadioButtons = new ButtonGroup();
+	private JGPSTrackEdit own;
+	private JPopupMenu popupTracksView;
+	private UnDoManager appendUnDo = null;
+	private JCheckBoxMenuItem chckbxmntmScale;
+	private boolean showScale = true;
+	
+	//-------------------------------------------------
+	// plugins
+	private SaveMapExtractButton savemapextract_plugin;
+	private SaveMapAsImageButton savemapimage_plugin;
+	private TrackModificationButtons trackmodification_plugin;
+	
+	//-------------------------------------------------
+
+
+	/** Creates new form JGPSTrackEdit */
+	public JGPSTrackEdit() {
+		own = this;
+		//-------------------------------------------------
+		// init plugins		
+		this.trackmodification_plugin = new TrackModificationButtons();
+		trackmodification_plugin.initButtons(this);
+		//-------------------------------------------------
+
+	}
+
+	private void initComponents() {
+
+		
+		
+		
+
+		//---------------------------------------------------------------------
+		// modifactions for track modification plugin
+		// TODO:
+		if(trackmodification_plugin != null) {
+			btnReverseTrack = new JButton("");
+			btnReverseTrack.setBorder(null);
+			btnReverseTrack.setContentAreaFilled(false);
+			btnReverseTrack.setMaximumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setMinimumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setPreferredSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
+			btnReverseTrack.setToolTipText(trackmodification_plugin.track_reverse_btn.getButtonToolTip());
+			btnReverseTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
+					.getResource(trackmodification_plugin.track_reverse_btn.getButtonIcon())));
+			btnReverseTrack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					trackmodification_plugin.track_reverse_btn.buttonClicked(uiController);
+				}
+			});
+			toolBar.add(btnReverseTrack);
+	
+			
+		}
+		//---------------------------------------------------------------------
+		
+		// -------------------------------------------------------------------------------------------------
+		// some modifications for track handling menu (split merge reverse compress)
+		if(trackmodification_plugin != null) {
+			jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
+			jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					jMenuItemReverseActionPerformed(evt);
+				}
+			});
+		}
+		
+		mntmNew = new JMenuItem(International.getText("menu.Track.New"));
+		mntmNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				handleNewTrack();
+			}
+		});
+		trackMenu.add(mntmNew);
+		trackMenu.addSeparator();
+		if(trackmodification_plugin != null)
+			trackMenu.add(jMenuItemReverse);
+
+			menuBar.add(trackMenu);
+		}
+		
+
+		JMenuItem mntmUpdateElevation = new JMenuItem(
+				International.getText("menu.Track.Update_Elevation"));
+		mntmUpdateElevation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.updateElevation();
+			}
+		});
+
+		if(trackmodification_plugin != null) {
+			mntmCompress = new JMenuItem(
+					International.getText("menu.Track.Compress") + "...");
+			mntmCompress.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					uiController.compress();
+				}
+			});
+			trackMenu.add(mntmCompress);
+		}
+		// -------------------------------------------------------------------------------------------------
+		trackMenu.add(mntmUpdateElevation);
+
+		JMenuItem mntmCorrectPoints = new JMenuItem(
+				International.getText("menu.Track.Correct_points"));
+		mntmCorrectPoints.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.correctSelectedTrack();
+			}
+		});
+		trackMenu.add(mntmCorrectPoints);
+
+		mntmRemoveInvalidPoints = new JMenuItem(
+				International.getText("menu.Track.Remove_invalid_points"));
+		mntmRemoveInvalidPoints.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.correctZeroPoints();
+			}
+		});
+		trackMenu.add(mntmRemoveInvalidPoints);
+
+		mnPoints = new JMenu(International.getText("menu.Point"));
+		menuBar.add(mnPoints);
+
+		mntmDelete = new JMenuItem(International.getText("menu.Point.Delete"));
+		mntmDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.deleteSelectedPoint();
+			}
+		});
+
+		mntmDeleteP = new JMenuItem(International.getText("menu.Point.Delete"));
+		mntmDeleteP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.deleteSelectedPoint();
+			}
+		});
+
+		mntmInsertAdjacentPoints = new JMenuItem(
+				International.getText("menu.Point.Insert_adjacent_points"));
+		mntmInsertAdjacentPoints.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.insertAdjacentPoints();
+			}
+		});
+		mntmInsertAdjacentPointsP = new JMenuItem(
+				International.getText("menu.Point.Insert_adjacent_points"));
+		mntmInsertAdjacentPointsP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.insertAdjacentPoints();
+			}
+		});
+
+		mntmMoveSelectedPoint = new JMenuItem(
+				International.getText("menu.Point.Move_selected_point"));
+		mntmMoveSelectedPoint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleMoveSelectedPoint();
+			}
+		});
+		mntmMoveSelectedPointP = new JMenuItem(
+				International.getText("menu.Point.Move_selected_point"));
+		mntmMoveSelectedPointP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleMoveSelectedPoint();
+			}
+		});
+		mnPoints.add(mntmMoveSelectedPoint);
+
+		chckbxmntmMoveselectedpointmode = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Move_selected_point_mode"));
+		chckbxmntmMoveselectedpointmode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleMoveSelectedPointMode(chckbxmntmMoveselectedpointmode
+						.isSelected());
+			}
+		});
+		mnPoints.add(chckbxmntmMoveselectedpointmode);
+		mnPoints.addSeparator();
+
+		chckbxmntmMoveselectedpointmodeP = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Move_selected_point_mode"));
+		chckbxmntmMoveselectedpointmodeP
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						handleMoveSelectedPointMode(chckbxmntmMoveselectedpointmodeP
+								.isSelected());
+					}
+				});
+
+		chckbxmntmAppendMode = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Append_mode"));
+		chckbxmntmAppendMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmAppendModeP.setSelected(chckbxmntmAppendMode
+						.isSelected());
+				handleAppendModeChange();
+			}
+		});
+		chckbxmntmAppendModeP = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Append_mode"));
+		chckbxmntmAppendModeP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmAppendMode.setSelected(chckbxmntmAppendModeP
+						.isSelected());
+				handleAppendModeChange();
+			}
+		});
+		mnPoints.add(chckbxmntmAppendMode);
+
+		chckbxmntmAppendRoutingMode = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Append_routing_mode"));
+		chckbxmntmAppendRoutingMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmAppendRoutingModeP
+						.setSelected(chckbxmntmAppendRoutingMode.isSelected());
+				handleAppendRoutingModeChange();
+			}
+		});
+		chckbxmntmAppendRoutingModeP = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Append_routing_mode"));
+		chckbxmntmAppendRoutingModeP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmAppendRoutingMode
+						.setSelected(chckbxmntmAppendRoutingModeP.isSelected());
+				handleAppendRoutingModeChange();
+			}
+		});
+		mnPoints.add(chckbxmntmAppendRoutingMode);
+
+		mntmUndoAppend = new JMenuItem(
+				International.getText("menu.Point.Undo_append"));
+		mntmUndoAppend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.undoAppend();
+				repaint();
+			}
+		});
+		mntmUndoAppendP = new JMenuItem(
+				International.getText("menu.Point.Undo_append"));
+		mntmUndoAppendP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.undoAppend();
+				repaint();
+			}
+		});
+		mnPoints.add(mntmUndoAppend);
+		mnPoints.add(mntmInsertAdjacentPoints);
+		mnPoints.addSeparator();
+		mnPoints.add(mntmDelete);
+
+		chckbxmntmDeleteMode = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Delete_mode"));
+		chckbxmntmDeleteMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleDeleteMode();
+			}
+		});
+		chckbxmntmDeleteModeP = new JCheckBoxMenuItem(
+				International.getText("menu.Point.Delete_mode"));
+		chckbxmntmDeleteModeP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pointDeleteMode = chckbxmntmDeleteModeP.getState();
+				tracksPanel.setPointDeleteMode(chckbxmntmDeleteModeP.getState());
+				repaint();
+			}
+		});
+		mnPoints.add(chckbxmntmDeleteMode);
+
+		mntmShortCut = new JMenuItem(
+				International.getText("menu.Point.Short_Cut"));
+		mntmShortCut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				handleShortCut();
+			}
+		});
+		mnPoints.add(mntmShortCut);
+
+		mntmEditPointP = new JMenuItem("Edit Point");
+		mntmEditPointP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mntmEditPointActionPerformed(e);
+			}
+		});
+
+		mntmEditPoint = new JMenuItem("Edit Point");
+		mntmEditPoint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mntmEditPointActionPerformed(e);
+			}
+		});
+		mnPoints.addSeparator();
+		mnPoints.add(mntmEditPoint);
+
+		mntmShortCutP = new JMenuItem(
+				International.getText("menu.Point.Short_Cut"));
+		mntmShortCutP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				handleShortCut();
+			}
+		});
+
+		mnView = new JMenu(International.getText("menu.View"));
+		menuBar.add(mnView);
+
+		mntmZoomIn = new JMenuItem(International.getText("menu.View.Zoom_In"));
+		mntmZoomIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.zoomIn();
+			}
+		});
+		mnView.add(mntmZoomIn);
+
+		mntmZoomOut = new JMenuItem(International.getText("menu.View.Zoom_out"));
+		mntmZoomOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.zoomOut();
+			}
+		});
+		mnView.add(mntmZoomOut);
+
+		mntmZoomSelectedTrack = new JMenuItem(
+				International.getText("menu.View.Zoom_selected_track"));
+		mntmZoomSelectedTrack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.zoomSelectedTrack();
+			}
+		});
+		mnView.add(mntmZoomSelectedTrack);
+
+		JMenuItem mntmZoomSelectedPoint = new JMenuItem(
+				International.getText("menu.View.Zoom_selected_point"));
+		mntmZoomSelectedPoint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.zoomSelectedPoint();
+			}
+		});
+		mnView.add(mntmZoomSelectedPoint);
+
+		JMenuItem mntmZoomMapExtract = new JMenuItem(
+				International.getText("menu.View.Zoom_map_extract") + "...");
+		mntmZoomMapExtract.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.zoomMapExtract();
+			}
+		});
+		mnView.add(mntmZoomMapExtract);
+
+		// -------------------------------------------------------------------------------------------------
+		// added: functionality to disable "save map tile"
+		if(savemapextract_plugin != null) {
+			JMenuItem mntmSaveCurrentMap = new JMenuItem(
+					International.getText("menu.View.Save_current_map_extract")
+							+ "...");
+			mntmSaveCurrentMap.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					savemapextract_plugin.buttonClicked(uiController);
+				}
+			});
+			mnView.add(mntmSaveCurrentMap);
+		}
+		// -------------------------------------------------------------------------------------------------
+		mnView.addSeparator();
+
+		mnMaps = new JMenu(International.getText("menu.View.Maps"));
+		mnView.add(mnMaps);
+
+		rdbtnmntmNone = new JRadioButtonMenuItem(
+				International.getText("menu.View.Maps.None"));
+		rdbtnmntmNone.setSelected(true);
+		mapRadioButtons.add(rdbtnmntmNone);
+		rdbtnmntmNone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// No Map should be used
+				uiController.tileManagerNone();
+				repaint();
+
+			}
+		});
+		mnMaps.add(rdbtnmntmNone);
+
+		rdbtnmntmOpenstreetmapmapnik = new JRadioButtonMenuItem(
+				"OpenStreetMap (Mapnik)");
+		mapRadioButtons.add(rdbtnmntmOpenstreetmapmapnik);
+		rdbtnmntmOpenstreetmapmapnik.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// OSM (Mapnik) should be used
+				uiController.tileManagerOSM_Mapnik();
+			}
+		});
+		mnMaps.add(rdbtnmntmOpenstreetmapmapnik);
+		
+		
+		rdbtnmntmOpencyclemap = new JRadioButtonMenuItem("OpenCycleMap");
+		mapRadioButtons.add(rdbtnmntmOpencyclemap);
+		rdbtnmntmOpencyclemap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.tileManagerOCM();
+			}
+		});
+		mnMaps.add(rdbtnmntmOpencyclemap);
+
+		JRadioButtonMenuItem rdbtnmntmGooglemap = new JRadioButtonMenuItem(
+				"GoogleMap");
+		mapRadioButtons.add(rdbtnmntmGooglemap);
+		rdbtnmntmGooglemap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMap();
+			}
+		});
+		
+
+		rdbtnmntmHikebikemap = new JRadioButtonMenuItem("HikeBikeMap");
+	
+		mapRadioButtons.add(rdbtnmntmHikebikemap);
+		rdbtnmntmHikebikemap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerHikeBikeMap();
+			}
+		});
+		mnMaps.add(rdbtnmntmHikebikemap);
+		
+
+		rdbtnmntmumap = new JRadioButtonMenuItem("4UMap");
+		mapRadioButtons.add(rdbtnmntmumap);
+		rdbtnmntmumap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManager4UMap();
+			}
+		});
+		mnMaps.add(rdbtnmntmumap);
+		mnMaps.add(new JSeparator());
+
+		rdbtnmntmMapquest = new JRadioButtonMenuItem("MapQuest");
+		rdbtnmntmMapquest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.tileManagerMapQuest();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquest);
+	
+		mapRadioButtons.add(rdbtnmntmMapquest);
+
+		rdbtnmntmMapquestsatellite = new JRadioButtonMenuItem(
+				"MapQuest (Satellite)");
+		rdbtnmntmMapquestsatellite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerMapQuestSat();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquestsatellite);
+		mapRadioButtons.add(rdbtnmntmMapquestsatellite);
+
+		rdbtnmntmMapquesthybride = new JRadioButtonMenuItem(
+				"MapQuest (Hybride)");
+		rdbtnmntmMapquesthybride.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerMapQuestHybride();
+			}
+		});
+		mnMaps.add(rdbtnmntmMapquesthybride);
+		mapRadioButtons.add(rdbtnmntmMapquesthybride);
+
+		mnMaps.addSeparator();
+		mnMaps.add(rdbtnmntmGooglemap);
+
+		rdbtnmntmGooglemapsatellite = new JRadioButtonMenuItem(
+				"GoogleMap (Satellite)");
+		mapRadioButtons.add(rdbtnmntmGooglemapsatellite);
+		rdbtnmntmGooglemapsatellite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapSatellite();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemapsatellite);
+
+		rdbtnmntmGooglemaphybrid = new JRadioButtonMenuItem(
+				"GoogleMap (Hybrid)");
+		mapRadioButtons.add(rdbtnmntmGooglemaphybrid);
+		rdbtnmntmGooglemaphybrid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapHybrid();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemaphybrid);
+
+		rdbtnmntmGooglemapterrain = new JRadioButtonMenuItem(
+				"GoogleMap (Terrain)");
+		mapRadioButtons.add(rdbtnmntmGooglemapterrain);
+		rdbtnmntmGooglemapterrain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.tileManagerGoogleMapTerrain();
+			}
+		});
+		mnMaps.add(rdbtnmntmGooglemapterrain);
+		
+		mnView.addSeparator();
+
+		chckbxmntmShowDayTour = new JCheckBoxMenuItem(
+				International.getText("menu.View.Show_day_tour_markers"));
+		chckbxmntmShowDayTour.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tracksPanel.setShowDayTourMarkers(chckbxmntmShowDayTour
+						.isSelected());
+				altitudeProfilePanel.setShowDayTourMarkers(chckbxmntmShowDayTour
+						.isSelected());
+				repaint();
+			}
+		});
+		mnView.add(chckbxmntmShowDayTour);
+
+		mntmRefreshMap = new JMenuItem(
+				International.getText("menu.View.Refresh_Map"));
+		mntmRefreshMap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+
+		chckbxmntmShowCoordinates = new JCheckBoxMenuItem(
+				International.getText("menu.View.Show_coordinates"));
+		chckbxmntmShowCoordinates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tracksPanel.setShowCoordinates(chckbxmntmShowCoordinates
+						.isSelected());
+				showCoordinatesMode = chckbxmntmShowCoordinates.isSelected();
+				repaint();
+			}
+		});
+		mnView.add(chckbxmntmShowCoordinates);
+
+		chckbxmntmDistanceMeasurement = new JCheckBoxMenuItem(
+				International.getText("menu.View.Distance_Measurement"));
+		chckbxmntmDistanceMeasurement.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				handleDistanceMeasurementChange();
+			}
+		});
+
+		chckbxmntmPointInformation = new JCheckBoxMenuItem(
+				International.getText("menu.View.Point_Information"));
+		chckbxmntmPointInformation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmPointInformationActionPerformed(arg0);
+			}
+		});
+		mnView.add(chckbxmntmPointInformation);
+		mnView.add(chckbxmntmDistanceMeasurement);
+
+		chckbxmntmShowTrackLength = new JCheckBoxMenuItem(
+				International.getText("menu.View.Show_Track_Lengths"));
+		chckbxmntmShowTrackLength.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmShowTrackLengthActionPerformed(arg0);
+			}
+		});
+		mnView.add(chckbxmntmShowTrackLength);
+
+		chckbxmntmScale = new JCheckBoxMenuItem(
+				International.getText("menu.View.Show_Scale"));
+		chckbxmntmScale.setSelected(true);
+		chckbxmntmScale.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxmntmScaleActionPerformed(arg0);
+			}
+		});
+		mnView.add(chckbxmntmScale);
+
+		mnView.addSeparator();
+		mnView.add(mntmRefreshMap);
+
+		chckbxmntmNewCheckItem = new JCheckBoxMenuItem(
+				International.getText("menu.View.Show_Tiles"));
+		chckbxmntmNewCheckItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TileManager.getCurrentTileManager().setShowTiles(
+						chckbxmntmNewCheckItem.isSelected());
+				repaint();
+			}
+		});
+
+		chckbxmntmAutoRefresh = new JCheckBoxMenuItem(
+				International.getText("menu.View.Auto_refresh"));
+		chckbxmntmAutoRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tracksPanel.setAutoRefresh(chckbxmntmAutoRefresh.isSelected());
+			}
+		});
+		chckbxmntmAutoRefresh.setSelected(true);
+		mnView.add(chckbxmntmAutoRefresh);
+		mnView.add(chckbxmntmNewCheckItem);
+
+		helpMenu.setText(International.getText("menu.Help"));
+
+		contentsMenuItem.setText(International.getText("menu.Help.Short_Help"));
+		helpMenu.add(contentsMenuItem);
+
+		JMenuItem mntmUserManual = new JMenuItem(
+				International.getText("menu.Help.User_Manual"));
+		mntmUserManual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				uiController.userManual();
+			}
+		});
+		helpMenu.add(mntmUserManual);
+
+		JMenuItem mntmUpdatePage = new JMenuItem(
+				International.getText("menu.Help.Update_Page"));
+		mntmUpdatePage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uiController.updatePage();
+			}
+		});
+
+		mnTiledownload = new JMenu(
+				International.getText("menu.TileDown.Tile_Download"));
+		if(savemapextract_plugin != null)
+			menuBar.add(mnTiledownload);
+
+		mntmStartTileDownload = new JMenuItem(
+				International.getText("menu.TileDown.Start_Tile_Download_Mode"));
+		mntmStartTileDownload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mntmStartTileDownloadActionPerformed(arg0);
+			}
+		});
+		mnTiledownload.add(mntmStartTileDownload);
+		mnTiledownload.addSeparator();
+
+		mntmAddBorderTiles = new JMenuItem(
+				International.getText("menu.TileDown.Add_Border_Tiles"));
+		mntmAddBorderTiles.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mntmAddBorderTilesActionPerformed(e);
+			}
+		});
+		mnTiledownload.add(mntmAddBorderTiles);
+
+		mntmSaveCurrentWork = new JMenuItem(
+				International.getText("menu.TileDown.Save_Current_Work"));
+		mntmSaveCurrentWork.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mntmSaveCurrentWorkActionPerformed(e);
+			}
+		});
+
+		mntmAddCurentMap = new JMenuItem(
+				International.getText("menu.TileDown.Add_Current_Map_Extract"));
+		mntmAddCurentMap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mntmAddCurentMapActionPerformed(arg0);
+			}
+		});
+
+		mntmAddArea = new JMenuItem(
+				International.getText("menu.TileDown.Add_Area"));
+		mntmAddArea.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mntmAddAreaActionPerformed(arg0);
+			}
+		});
+		mnTiledownload.add(mntmAddArea);
+		mnTiledownload.add(mntmAddCurentMap);
+
+		mnTiledownload.addSeparator();
+
+		mnTiledownload.add(mntmSaveCurrentWork);
+
+		mntmStopAndSave = new JMenuItem(
+				International.getText("menu.TileDown.Save_Download_Exit_Mode"));
+		mntmStopAndSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mntmStopAndSaveActionPerformed(arg0);
+			}
+		});
+		mnTiledownload.add(mntmStopAndSave);
+		helpMenu.add(mntmUpdatePage);
+
+		aboutMenuItem.setText(International.getText("menu.Help.About"));
+		helpMenu.add(aboutMenuItem);
+
+		menuBar.add(helpMenu);
+
+		setJMenuBar(menuBar);
+
+		pack();
+	}// </editor-fold>//GEN-END:initComponents
+
+	protected void chckbxmntmScaleActionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		showScale = chckbxmntmScale.isSelected();
+		tracksPanel.setShowScale(showScale);
+		repaint();
+	}
+
+	protected void handleMoveSelectedPointMode(boolean selected) {
+		// TODO Auto-generated method stub
+		chckbxmntmMoveselectedpointmode.setSelected(selected);
+		chckbxmntmMoveselectedpointmodeP.setSelected(selected);
+		moveSelectedPointMode = selected;
+		if (selected)
+			handleMoveSelectedPoint();
+	}
+
+	public JTable getPointsTable() {
+		return jTablePoints;
+	}
+
+	protected void handleAbout() {
+		DlgAbout dialog = new DlgAbout();
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
+
+	}
+
+	protected void handleDeleteMode() {
+		pointDeleteMode = chckbxmntmDeleteMode.getState();
+		tracksPanel.setPointDeleteMode(chckbxmntmDeleteMode.getState());
+		repaint();
+
+	}
+
+	protected void handleMerge() {
+		try {
+			DlgMerge dialog = new DlgMerge(db.getTrack(
+					jTableTracks.getSelectedRow()).getName(), db.getTracks());
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setModalityType(ModalityType.DOCUMENT_MODAL);
+			dialog.setVisible(true);
+			uiController.merge(dialog.getMergeOption(),
+					db.getTrack(jTableTracks.getSelectedRow()),
+					dialog.getMergeTrack(), dialog.getTrackName());
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
+	protected void handleSplit() {
+		try {
+			DlgSplit dialog = new DlgSplit(db.getTrack(
+					jTableTracks.getSelectedRow()).getName());
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setModalityType(ModalityType.DOCUMENT_MODAL);
+			dialog.setVisible(true);
+			uiController.split(dialog.getSplitOption(),
+					db.getTrack(jTableTracks.getSelectedRow()),
+					dialog.getTrackName(), dialog.getNumberTracks(),
+					dialog.getNumberPoints(), dialog.getSplitLength());
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
+	protected void handleShortCut() {
+		shortCut = true;
+		shortCutStartPoint = getTracksView().getSelectedTrackView()
+				.getSelectedPoint();
+		tracksPanel.addBondPoint(shortCutStartPoint);
+		tracksPanel.setShowBonds(true);
+		tracksPanel.setCursorText(International.getText("ct.short_cut"),
+				Color.RED);
+		// tracksPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+	}
+
+	protected void handleMoveSelectedPoint() {
+		moveSelectedPoint = true;
+		tracksPanel.setShowBonds(true);
+		TrackView selectedTrackView = getTracksView().getSelectedTrackView();
+		int selectedIndex = selectedTrackView.getSelectedPointIndex();
+		if (selectedIndex > 1) {
+			tracksPanel.addBondPoint(selectedTrackView.getTrack().getPoint(
+					selectedIndex - 1));
+		}
+		if (selectedIndex < selectedTrackView.getTrack().getNumberPoints() - 1) {
+			tracksPanel.addBondPoint(selectedTrackView.getTrack().getPoint(
+					selectedIndex + 1));
+		}
+		tracksPanel
+				.setCursorText(International.getText("ct_move"), Color.GREEN);
+
+	}
+
+	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
+		if (db.isModified()) {
+			if (JOptionPane.showConfirmDialog(this,
+					International.getText("exit_anyway"),
+					International.getText("Unsaved_Tracks"),
+					JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+				return;
+		}
+		MapExtractManager.add("LAST_MAP_EXTRACT", Transform.getZoomLevel(),
+				Transform.getUpperLeftBoundary());
+		MapExtractManager.save();
+		Configuration.setProperty("MAPTYPE", TileManager
+				.getCurrentTileManager().getMapName());
+		Configuration.saveProperties();
+		System.exit(0);
+	}// GEN-LAST:event_exitMenuItemActionPerformed
+
+	private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fileMenuActionPerformed
+		// TODO add your handling code here:
+
+	}// GEN-LAST:event_fileMenuActionPerformed
+
+	private void jButtonOpenTrackActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonOpenTrackActionPerformed
+		// TODO add your handling code here:
+		uiController.openTrack();
+	}// GEN-LAST:event_jButtonOpenTrackActionPerformed
+
+	private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_openMenuItemActionPerformed
+		// TODO add your handling code here:
+		uiController.openTrack();
+	}// GEN-LAST:event_openMenuItemActionPerformed
+
+	private void jMenuItemReverseActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItemReverseActionPerformed
+		// TODO add your handling code here:
+		uiController.reverseTrack();
+	}// GEN-LAST:event_jMenuItemReverseActionPerformed
+
+	private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_saveAsMenuItemActionPerformed
+		// TODO add your handling code here:
+		uiController.saveAs();
+	}// GEN-LAST:event_saveAsMenuItemActionPerformed
+
+	private void jButtonNorthActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonNorthActionPerformed
+		// TODO add your handling code here:
+		uiController.moveNorth();
+	}// GEN-LAST:event_jButtonNorthActionPerformed
+
+	private void jButtonSouthActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonSouthActionPerformed
+		// TODO add your handling code here:
+		uiController.moveSouth();
+	}// GEN-LAST:event_jButtonSouthActionPerformed
+
+	private void jButtonWestActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonWestActionPerformed
+		// TODO add your handling code here:
+		uiController.moveWest();
+	}// GEN-LAST:event_jButtonWestActionPerformed
+
+	private void jButtonEastActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonEastActionPerformed
+		// TODO add your handling code here:
+		uiController.moveEast();
+	}// GEN-LAST:event_jButtonEastActionPerformed
+
+	public void setStateMessage(String msg) {
+		jTextFieldStateMessage.setText(msg);
+	}
+
+	public javax.swing.JTable getTracksTable() {
+		return jTableTracks;
+	}
+
+	public TracksView getTracksView() {
+		return tracksView;
+	}
+
+	public TracksPanel getTracksPanel() {
+		return tracksPanel;
+	}
+
+	public Point getSelectedPoint() {
+		return tracksView.getSelectedTrackView().getSelectedPoint();
+	}
+
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	public static void main(String args[]) {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				JGPSTrackEdit w = new JGPSTrackEdit();
+				w.setVisible(true);
+				if (Configuration.getBooleanProperty("SHOW_HELP_ON_STARTUP")) {
+					w.handleHelp();
+				}
+				w.handleUpdateRequest();
+			}
+		});
+	}
+
+	protected void handleUpdateRequest() {
+		// Warning: month are counted from 0! (February == 1)
+		GregorianCalendar updateDay = new GregorianCalendar(2015, 5, 18);
+		GregorianCalendar today = new GregorianCalendar();
+		if (!Configuration.getBooleanProperty("NOUPDATEREQUEST")
+				&& updateDay.get(Calendar.YEAR) <= today.get(Calendar.YEAR)
+				&& updateDay.get(Calendar.MONTH) <= today.get(Calendar.MONTH)
+				&& updateDay.get(Calendar.DAY_OF_MONTH) <= today
+						.get(Calendar.DAY_OF_MONTH)) {
+			if (JOptionPane.showConfirmDialog(this,
+					International.getText("Update_Request_Text"),
+					International.getText("Update_request"),
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				uiController.updatePage();
+			} else {
+				Configuration.setProperty("NOUPDATEREQUEST", "1");
+				Configuration.saveProperties();
+			}
+		}
+	}
+
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JMenuItem aboutMenuItem;
+	private javax.swing.JMenuItem contentsMenuItem;
+	private javax.swing.JMenuItem exitMenuItem;
+	private javax.swing.JMenu fileMenu;
+	private javax.swing.JMenu helpMenu;
+	private javax.swing.JButton jButtonSave;
+	private javax.swing.JButton jButtonEast;
+	private javax.swing.JButton jButtonNorth;
+	private javax.swing.JButton jButtonOpenTrack;
+	private javax.swing.JButton jButtonSouth;
+	private javax.swing.JButton jButtonWest;
+	private javax.swing.JMenuItem jMenuItemReverse;
+	private javax.swing.JPanel jPanelstatusBar;
+	private javax.swing.JPanel jPanelMap;
+	private javax.swing.JScrollPane jScrollPaneTracksTable;
+	private javax.swing.JScrollPane jScrollPanePointsTable;
+	private javax.swing.JSplitPane jSplitPaneTrack;
+	private javax.swing.JSplitPane jSplitPaneTrackDetail;
+	private javax.swing.JSplitPane jSplitPaneMap;
+	private javax.swing.JTable jTableTracks;
+	private javax.swing.JTable jTablePoints;
+	private javax.swing.JTextField jTextFieldStateMessage;
+	private javax.swing.JMenuBar menuBar;
+	private javax.swing.JMenuItem openMenuItem;
+	private javax.swing.JMenuItem saveAsMenuItem;
+	private javax.swing.JMenuItem saveMenuItem;
+	private javax.swing.JMenu trackMenu;
+	private JMenuItem mntmConfiguration;
+	private JMenu mnPoints;
+	private JMenuItem mntmDelete;
+	private JMenuItem mntmDeleteP;
+	private JCheckBoxMenuItem chckbxmntmDeleteMode;
+	private JCheckBoxMenuItem chckbxmntmDeleteModeP;
+	private JMenu mnView;
+	private JMenuItem mntmZoomIn;
+	private JMenuItem mntmZoomOut;
+	private JMenuItem mntmSplit;
+	private JMenuItem mntmMerge;
+	private JMenuItem mntmDelete_1;
+	private JMenu mnMaps;
+	private JRadioButtonMenuItem rdbtnmntmNone;
+	private JRadioButtonMenuItem rdbtnmntmOpenstreetmapmapnik;
+	private JMenuItem mntmZoomSelectedTrack;
+	private JMenuItem mntmRefreshMap;
+	private JCheckBoxMenuItem chckbxmntmShowDayTour;
+	private JMenuItem mntmMoveSelectedPoint;
+	private JMenuItem mntmMoveSelectedPointP;
+	private JCheckBoxMenuItem chckbxmntmAppendMode;
+	private JCheckBoxMenuItem chckbxmntmAppendModeP;
+	private JRadioButtonMenuItem rdbtnmntmOpencyclemap;
+	private JCheckBoxMenuItem chckbxmntmShowCoordinates;
+	private JMenuItem mntmInsertAdjacentPoints;
+	private JMenuItem mntmInsertAdjacentPointsP;
+	private JMenuItem mntmNew;
+	private JButton btnConfiguration;
+	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
+	private JMenuItem mnuItemReloadTile;
+	private JMenuItem mntmOpenGpsiescomTrack;
+	private JRadioButtonMenuItem rdbtnmntmHikebikemap;
+	private JRadioButtonMenuItem rdbtnmntmMapquest;
+	private JCheckBoxMenuItem chckbxmntmAppendRoutingMode;
+	private JCheckBoxMenuItem chckbxmntmAppendRoutingModeP;
+	private JCheckBoxMenuItem chckbxmntmAutoRefresh;
+	private JMenuItem mntmUndoAppend;
+	private JMenuItem mntmUndoAppendP;
+	private JRadioButtonMenuItem rdbtnmntmMapquestsatellite;
+	private JRadioButtonMenuItem rdbtnmntmMapquesthybride;
+	private JMenuItem mntmShortCut;
+	private JMenuItem mntmShortCutP;
+	private JMenuItem mntmRemoveInvalidPoints;
+	private JMenuItem mntmCompress;
+	private JButton btnNewTrack;
+	private JButton btnReverseTrack;
+	private JButton btnSplitTrack;
+	private JButton btnMergeTrack;
+	private JButton btnCompressTrack;
+	private JButton btnUpdateElevations;
+	private JButton btnMoveSelectedPoint;
+	private JButton btnAppendMode;
+	private JButton btnAppendRoutingMode;
+	private JButton btnUndoAppends;
+	private JButton btnInsertAdjacentPoints;
+	private JButton btnDeletePoint;
+	private JButton btnDeleteMode;
+	private JButton btnShortCut;
+	private JButton btnNewButton_2;
+	private JCheckBoxMenuItem chckbxmntmMoveselectedpointmode;
+	private JCheckBoxMenuItem chckbxmntmMoveselectedpointmodeP;
+	private JCheckBoxMenuItem chckbxmntmDistanceMeasurement;
+	private JRadioButtonMenuItem rdbtnmntmumap;
+	private JRadioButtonMenuItem rdbtnmntmGooglemapsatellite;
+	private JRadioButtonMenuItem rdbtnmntmGooglemaphybrid;
+	private JRadioButtonMenuItem rdbtnmntmGooglemapterrain;
+	private JRadioButtonMenuItem rdbtnmntmGooglemap;
+	private JMenu mnTiledownload;
+	private JMenuItem mntmStartTileDownload;
+	private JMenuItem mntmAddBorderTiles;
+	private JMenuItem mntmStopAndSave;
+	private JMenuItem mntmSaveCurrentWork;
+	private JMenuItem mntmAddCurentMap;
+	private JMenuItem mntmAddArea;
+	private JCheckBoxMenuItem chckbxmntmShowTrackLength;
+	private JCheckBoxMenuItem chckbxmntmPointInformation;
+	private JMenuItem mntmEditPoint;
+	private JMenuItem mntmEditPointP;
+	private JMenuItem mntmSaveToGpsiescom;
+	private JMenuItem mntmSaveMapView;
+	private JMenuItem mntmSaveAltitudeProfile;
+
+	// End of variables declaration//GEN-END:variables
+
+	/**
+	 * Sets the selected track in some components. Not for general use!
+	 * 
+	 * @param track
+	 */
+	public void setSelectedTrack(Track selectedTrack) {
+		tracksView.setSelectedTrack(selectedTrack);
+		trackDataPanel.setTrack(selectedTrack);
+		altitudeProfilePanel.setTrack(selectedTrack);
+
+	}
+
+	/**
+	 * @return the altitudeProfilePanel
+	 */
+	public AltitudeProfilePanel getAltitudeProfilePanel() {
+		return altitudeProfilePanel;
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == jTableTracks.getSelectionModel()) {
+			int selectedRow = jTableTracks.getSelectedRow();
+			if (selectedRow != -1) {
+				db.getTrackTableModel().setSelectedTrack(
+						db.getTrack(selectedRow));
+				Track selectedTrack = db.getTrack(selectedRow);
+				setSelectedTrack(selectedTrack);
+				selectedRowTracksTable = selectedRow;
+				tracksPanel.repaint();
+			} else if (selectedRowTracksTable != -1) {
+				jTableTracks.addRowSelectionInterval(selectedRowTracksTable,
+						selectedRowTracksTable);
+			}
+		}
+		if (e.getSource() == jTablePoints.getSelectionModel()) {
+			int selectedRow = jTablePoints.getSelectedRow();
+			if (selectedRow != -1) {
+				tracksView.setSelectedPoint(db.getTrackTableModel()
+						.getSelectedTrack().getPoint(selectedRow));
+				altitudeProfilePanel.setSelectedPoint(db.getTrackTableModel()
+						.getSelectedTrack().getPoint(selectedRow));
+				tracksPanel.repaint();
+			}
+		}
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		boolean moveSelectedPointModeStarted = false;
+		tracksPanel.requestFocusInWindow();
+		int screenX = e.getX();
+		int screenY = e.getY();
+		currentScreenX = screenX;
+		currentScreenY = screenY;
+		tracksPanel.setMousePosition(screenX, screenY);
+		int selectedPointIndex = -1;
+		if (tracksView.getSelectedTrackView() != null) {
+			PointView selectedPoint = tracksView.getSelectedTrackView()
+					.getPointAt(screenX, screenY);
+			if (selectedPoint != null) {
+				selectedPointIndex = tracksView.getSelectedTrackView()
+						.getTrack().indexOf(selectedPoint.getPoint());
+				altitudeProfilePanel.setSelectedPoint(selectedPoint.getPoint());
+			} else {
+				altitudeProfilePanel.setSelectedPoint(null);
+			}
+		}
+		/*
+		 * int selectedPointIndex = tracksView.getSelectedTrackView()
+		 * .getPointIndexAt(screenX, screenY);
+		 */
+		if (selectedPointIndex != -1) {
+			// Set Row Selection Intervall of jTablePoints....
+			jTablePoints.setRowSelectionInterval(selectedPointIndex,
+					selectedPointIndex);
+			if (moveSelectedPointMode) {
+				handleMoveSelectedPoint();
+				moveSelectedPointModeStarted = true;
+			}
+		}
+		if (pointDeleteMode) {
+			uiController.deleteSelectedPoint();
+		}
+		if (moveSelectedPoint && !moveSelectedPointModeStarted) {
+			moveSelectedPoint = false;
+			tracksPanel.setShowBonds(false);
+			tracksPanel.clearBondPoints();
+			tracksPanel.setCursorText("", Color.BLACK);
+			uiController.setSelectedPointPosition(screenX, screenY);
+			repaint();
+		}
+		if (appendMode) {
+			uiController.appendPoint(screenX, screenY);
+			tracksPanel.clearBondPoints();
+			tracksPanel.addBondPoint(getTracksView().getSelectedTrackView()
+					.getTrack().getLastPoint());
+			repaint();
+		}
+		if (appendRoutingMode) {
+			uiController.appendRoutingPoint(screenX, screenY);
+		}
+		if (shortCut) {
+			tracksPanel.setShowBonds(false);
+			tracksPanel.clearBondPoints();
+			tracksPanel.setCursorText("", Color.RED);
+			uiController.shortCut(shortCutStartPoint, tracksView
+					.getSelectedTrackView().getSelectedPoint());
+			tracksPanel.setCursor(Cursor.getDefaultCursor());
+			shortCut = false;
+
+		}
+		if (tileDownload != null) {
+			double longitude = Transform.mapLongitude(screenX);
+			double latitude = Transform.mapLatitude(screenY);
+			if (tileSelectionMode == MODE_WAIT_FIRST_POINT) {
+				tileSelectionMode = MODE_WAIT_SECOND_POINT;
+				tracksPanel.setCursorText("Define lower right", Color.RED);
+				System.out
+						.println("tileSelectionMode = MODE_WAIT_SECOND_POINT");
+				tileSelectFirstPoint = new Point(longitude, latitude);
+				tracksPanel.setRectanglePoint(tileSelectFirstPoint);
+			} else if (tileSelectionMode == MODE_WAIT_SECOND_POINT) {
+				tileSelectionMode = MODE_INACTIVE;
+				tracksPanel.setCursorText("", Color.RED);
+				tracksPanel.setRectanglePoint(null);
+				tileDownload.addTiles(tileSelectFirstPoint, new Point(
+						longitude, latitude));
+			} else {
+				TileNumber clickedTileNumber = TileNumber.getTileNumber(
+						tileDownload.getZoomLevel(), longitude, latitude);
+				tileDownload.toggleTile(clickedTileNumber);
+			}
+			repaint();
+		}
+		if (distanceMeasurement) {
+			tracksPanel.clearBondPoints();
+			distanceMeasurementFirstPoint = new Point(
+					Transform.mapLongitude(screenX),
+					Transform.mapLatitude(screenY), 0);
+			tracksPanel.addBondPoint(distanceMeasurementFirstPoint);
+			tracksPanel.setCursorText("0.000km", Color.BLUE);
+			repaint();
+		}
+
+		lastScreenX = screenX;
+		lastScreenY = screenY;
+		lastDraggedX = -1;
+		lastDraggedY = -1;
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		tracksPanel.requestFocusInWindow();
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void maybeShowPopup(MouseEvent e) {
+		int screenX = e.getX();
+		int screenY = e.getY();
+		currentScreenX = screenX;
+		currentScreenY = screenY;
+		if (e.isPopupTrigger()) {
+			popupTracksView.show(e.getComponent(), e.getX(), e.getY());
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int screenX = e.getX();
+		int screenY = e.getY();
+		currentScreenX = screenX;
+		currentScreenY = screenY;
+		maybeShowPopup(e);
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int screenX = e.getX();
+		int screenY = e.getY();
+		currentScreenX = screenX;
+		currentScreenY = screenY;
+		lastDraggedX = -1;
+		lastDraggedY = -1;
+		if (draggingActive) {
+			tracksPanel.setCursor(Cursor.getDefaultCursor());
+			draggingActive = false;
+		}
+		maybeShowPopup(e);
+
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int screenX = e.getX();
+		int screenY = e.getY();
+		/*
+		 * System.out.println("JGPSTRackEdit: mouseDragged screenX=" + screenX +
+		 * " screenY=" + screenY + " lastDraggedX=" + lastDraggedX +
+		 * " lastDraggedY=" + lastDraggedY);
+		 */
+		if (lastDraggedX != -1) {
+			uiController
+					.move((screenX - lastDraggedX)
+							/ (double) tracksPanel.getWidth(),
+							(lastDraggedY - screenY)
+									/ (double) tracksPanel.getHeight());
+		}
+		lastDraggedX = screenX;
+		lastDraggedY = screenY;
+		tracksPanel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+		draggingActive = true;
+		repaint();
+
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int screenX = e.getX();
+		int screenY = e.getY();
+		tracksPanel.setMousePosition(screenX, screenY);
+		if (distanceMeasurement) {
+			distanceMeasurementSecondPoint = new Point(
+					Transform.mapLongitude(screenX),
+					Transform.mapLatitude(screenY), 0);
+			double distance = distanceMeasurementFirstPoint
+					.distance(distanceMeasurementSecondPoint);
+			tracksPanel.setCursorText(Parser.formatLength(distance) + "km",
+					Color.BLUE);
+
+		}
+
+		if (moveSelectedPoint || appendMode || appendRoutingMode
+				|| showCoordinatesMode || pointDeleteMode || shortCut
+				|| distanceMeasurement || tileSelectionMode > 0) {
+			repaint();
+		}
+
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		// TODO Auto-generated method stub
+		/*
+		 * System.out.println("JGPSTRackEdit: mouseWheelMoved=" +
+		 * e.getWheelRotation());
+		 */
+		if (e.getWheelRotation() < 0) {
+			uiController.zoomIn();
+		} else {
+			uiController.zoomOut();
+		}
+
+	}
+
+	@Override
+	public void configurationChanged() {
+		// TODO Auto-generated method stub
+		if (jButtonNorth != null) {
+			jButtonNorth.setVisible(Configuration
+					.getBooleanProperty("SHOW_DIRECTION_BUTTONS"));
+			jButtonSouth.setVisible(Configuration
+					.getBooleanProperty("SHOW_DIRECTION_BUTTONS"));
+			jButtonEast.setVisible(Configuration
+					.getBooleanProperty("SHOW_DIRECTION_BUTTONS"));
+			jButtonWest.setVisible(Configuration
+					.getBooleanProperty("SHOW_DIRECTION_BUTTONS"));
+		}
+		repaint();
+	}
+
+	@Override
+	public void keyPressed(KeyEvent key) {
+		// TODO Auto-generated method stub
+		// System.out.println("Key Pressed: " + key.getKeyCode());
+		if (key.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if (pointDeleteMode) {
+				chckbxmntmDeleteModeP.setState(false);
+				chckbxmntmDeleteMode.setState(false);
+				pointDeleteMode = false;
+				tileSelectionMode = MODE_INACTIVE;
+				tracksPanel.setPointDeleteMode(false);
+				tracksPanel.setCursor(Cursor.getDefaultCursor());
+				repaint();
+			}
+			if (moveSelectedPoint) {
+				moveSelectedPoint = false;
+				tracksPanel.setShowBonds(false);
+				tracksPanel.clearBondPoints();
+				tracksPanel.setCursorText("", Color.BLACK);
+				repaint();
+			}
+			handleMoveSelectedPointMode(false);
+			if (shortCut) {
+				tracksPanel.setShowBonds(false);
+				tracksPanel.clearBondPoints();
+				tracksPanel.setCursorText("", Color.RED);
+				shortCut = false;
+				tracksPanel.setCursor(Cursor.getDefaultCursor());
+				repaint();
+			}
+			if (appendMode) {
+				chckbxmntmAppendMode.setSelected(false);
+				chckbxmntmAppendModeP.setSelected(false);
+				handleAppendModeChange();
+				repaint();
+			}
+			if (appendRoutingMode) {
+				chckbxmntmAppendRoutingMode.setSelected(false);
+				chckbxmntmAppendRoutingModeP.setSelected(false);
+				handleAppendRoutingModeChange();
+				tracksPanel.setCursor(Cursor.getDefaultCursor());
+				repaint();
+			}
+			if (distanceMeasurement) {
+				chckbxmntmDistanceMeasurement.setSelected(false);
+				handleDistanceMeasurementChange();
+				repaint();
+			}
+		}
+		if (key.getKeyCode() == KeyEvent.VK_LEFT) {
+			uiController.selectPreviousPoint(true);
+		}
+		if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
+			uiController.selectNextPoint(true);
+		}
+		if (key.getKeyCode() == KeyEvent.VK_UP) {
+			uiController.selectPreviousPoint(false);
+		}
+		if (key.getKeyCode() == KeyEvent.VK_DOWN) {
+			uiController.selectNextPoint(false);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+
+	}
+
+	protected void mntmStartTileDownloadActionPerformed(ActionEvent arg0) {
+		DlgStartTiledownloadMode dialog = new DlgStartTiledownloadMode(this,
+				Transform.getZoomLevel(), TileManager.getCurrentTileManager()
+						.getMaxZoom());
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
+		tileDownload = new TileDownload();
+		TileManager.getCurrentTileManager().setTileDownload(tileDownload);
+		tileDownload.setZoomLevel(dialog.getDownloadZoom());
+		tracksPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		switch (dialog.getResult()) {
+		case DlgStartTiledownloadMode.TRACKS:
+			tileDownload.addTiles(db.getTracks());
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {
+			}
+			tracksPanel.setCursor(Cursor
+					.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+
+			break;
+		case DlgStartTiledownloadMode.FILE:
+			try {
+				tileDownload.loadFromFile(dialog.getFilePath());
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+				}
+				tracksPanel.setCursor(Cursor
+						.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Error opening file" + " "
+						+ dialog.getFilePath(), "File Open Error",
+						JOptionPane.ERROR_MESSAGE);
+				tileDownload = null;
+				TileManager.getCurrentTileManager().setTileDownload(
+						tileDownload);
+				tracksPanel.setCursor(Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			break;
+		case DlgStartTiledownloadMode.EMPTY:
+			tracksPanel.setCursor(Cursor
+					.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+
+			break;
+		case DlgStartTiledownloadMode.RESULT_CANCEL:
+			tileDownload = null;
+			TileManager.getCurrentTileManager().setTileDownload(tileDownload);
+			tracksPanel.setCursor(Cursor
+					.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			break;
+		}
+		repaint();
+	}
+
+	protected void mntmAddBorderTilesActionPerformed(ActionEvent e) {
+		if (tileDownload != null) {
+			tileDownload.appendBorderTiles();
+			repaint();
+		}
+	}
+
+	protected void mntmSaveCurrentWorkActionPerformed(ActionEvent e) {
+		if (tileDownload != null) {
+			JFileChooser fileSaveChooser = new JFileChooser();
+			int returnVal = fileSaveChooser.showSaveDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					tileDownload.saveToFile(fileSaveChooser.getSelectedFile()
+							.getPath());
+
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this,
+							"Error writing to file"
+									+ " "
+									+ fileSaveChooser.getSelectedFile()
+											.getPath(), "File Writing Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+
+	}
+
+	protected void mntmStopAndSaveActionPerformed(ActionEvent arg0) {
+		if (tileDownload != null) {
+			JFileChooser fileSaveChooser = new JFileChooser();
+			int returnVal = fileSaveChooser.showSaveDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					tileDownload.saveToFile(fileSaveChooser.getSelectedFile()
+							.getPath());
+					final DlgStopTiledownloadMode dlg = new DlgStopTiledownloadMode(
+							this, tileDownload.getZoomLevel(), TileManager
+									.getCurrentTileManager().getMapName());
+					dlg.setVisible(true);
+					if (dlg.isResult()) {
+						final DlgProcessingTileDownload proc = new DlgProcessingTileDownload();
+						proc.setVisible(true);
+
+						/*
+						 * try { Thread.sleep(250); } catch
+						 * (InterruptedException e) { }
+						 */
+						Thread t = new Thread(new Runnable() {
+							public void run() {
+								tileDownload.addExtensionTiles(dlg
+										.getAdditionalZoomLevels());
+								proc.startDownload(
+										tileDownload.getAllDownloadTiles(),
+										dlg.getTargetDir(), dlg.getExtension());
+								// Now exit tiledownload mode
+								tileDownload = null;
+								TileManager.getCurrentTileManager()
+										.setTileDownload(tileDownload);
+								tracksPanel.setCursor(Cursor
+										.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+							}
+						});
+						t.start();
+
+					}
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this,
+							"Error writing to file"
+									+ " "
+									+ fileSaveChooser.getSelectedFile()
+											.getPath(), "File Writing Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
+
+	protected void mntmAddCurentMapActionPerformed(ActionEvent arg0) {
+		tileDownload.addTiles(Transform.getUpperLeftBoundary(),
+				Transform.getLowerRightBoundary());
+	}
+
+	@SuppressWarnings("deprecation")
+	protected void mntmAddAreaActionPerformed(ActionEvent arg0) {
+		tileSelectionMode = MODE_WAIT_FIRST_POINT;
+		System.out.println("tileSelectionMode = MODE_WAIT_FIRST_POINT");
+		tracksPanel.setCursorText("Define upper left corner", Color.RED);
+		repaint();
+	}
+
+	protected void chckbxmntmShowTrackLengthActionPerformed(ActionEvent arg0) {
+		ViewingConfiguration.setShowLength(chckbxmntmShowTrackLength
+				.isSelected());
+		if (getTracksTable().getSelectedRowCount() == 1) {
+			Track currentTrack = db.getTracks().get(
+					getTracksTable().getSelectedRow());
+			currentTrack.getLength(true);
+		}
+		repaint();
+
+	}
+
+	protected void chckbxmntmPointInformationActionPerformed(ActionEvent arg0) {
+		ViewingConfiguration.setShowInformation(chckbxmntmPointInformation
+				.isSelected());
+		repaint();
+	}
+
+	protected void mntmEditPointActionPerformed(ActionEvent e) {
+		Point selectedPoint = getTracksView().getSelectedTrackView()
+				.getSelectedPoint();
+		if (selectedPoint != null) {
+			int selectedPointIndex = getTracksView().getSelectedTrackView()
+					.getSelectedPointIndex();
+			DlgPointEdit dialog = new DlgPointEdit(selectedPointIndex,
+					selectedPoint);
+			dialog.setModal(true);
+			dialog.setVisible(true);
+			repaint();
+		}
+
+	}
+	
+	protected void mntmSaveAltitudeProfileActionPerformed(ActionEvent arg0) {
+		uiController.saveAltitudeProfileasImage();
+	}
+}
