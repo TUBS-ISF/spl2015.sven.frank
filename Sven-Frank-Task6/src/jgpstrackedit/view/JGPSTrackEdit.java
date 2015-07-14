@@ -171,6 +171,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private void addSaveImagePlugin(){};
 	private void addSaveImageContextMenu() {};
 
+	private void addOpenButtons() {};
+	private void addOpenContext() {};
 	private void addSaveButtons() {}
 	private void addSaveContextMenu() {};
 	private void setSaveMenu(){};
@@ -531,50 +533,12 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		getContentPane().add(toolBar, java.awt.BorderLayout.NORTH);
 
 		toolBar.setFloatable(false);
-		jButtonOpenTrack = new javax.swing.JButton();
-		jButtonOpenTrack.setBorder(null);
-		toolBar.add(jButtonOpenTrack);
-		jButtonOpenTrack.setPreferredSize(new Dimension(20, 20));
-		jButtonOpenTrack.setMaximumSize(new Dimension(20, 20));
-		jButtonOpenTrack.setMinimumSize(new Dimension(20, 20));
-		jButtonOpenTrack.setContentAreaFilled(false);
-		jButtonOpenTrack.setToolTipText(International.getText("Open_Track"));
-		jButtonOpenTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/folder.png")));
+		
+		// -------------------------------------------------------------------------------------------------
+		// added: functionality to open button 
+		addOpenButtons();
+		// -------------------------------------------------------------------------------------------------
 
-		JButton btnOpenGpsiesTrack = new JButton("");
-		btnOpenGpsiesTrack.setBorder(null);
-		btnOpenGpsiesTrack.setMaximumSize(new Dimension(20, 20));
-		btnOpenGpsiesTrack.setMinimumSize(new Dimension(20, 20));
-		btnOpenGpsiesTrack.setContentAreaFilled(false);
-		btnOpenGpsiesTrack.setPreferredSize(new Dimension(20, 20));
-		btnOpenGpsiesTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/folder_find.png")));
-		btnOpenGpsiesTrack.setToolTipText(International
-				.getText("Open_GPSies_Track"));
-		btnOpenGpsiesTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.openGPSies();
-			}
-		});
-		toolBar.add(btnOpenGpsiesTrack);
-
-		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.openDirectory();
-			}
-		});
-		btnNewButton_1.setBorder(null);
-		btnNewButton_1.setContentAreaFilled(false);
-		btnNewButton_1.setMaximumSize(new Dimension(20, 20));
-		btnNewButton_1.setMinimumSize(new Dimension(20, 20));
-		btnNewButton_1.setPreferredSize(new Dimension(20, 20));
-		btnNewButton_1.setIcon(new ImageIcon(JGPSTrackEdit.class
-				.getResource("/jgpstrackedit/view/icon/folder_table.png")));
-		btnNewButton_1.setToolTipText(International.getText("sel_dir"));
-		toolBar.add(btnNewButton_1);
-		toolBar.addSeparator();
 		
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable save_track/saveas button 
@@ -1099,32 +1063,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			}
 		});
 
-		openMenuItem.setText(International.getText("Open_Track") + "...");
-		openMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				openMenuItemActionPerformed(evt);
-			}
-		});
-		fileMenu.add(openMenuItem);
-
-		mntmOpenGpsiescomTrack = new JMenuItem(
-				International.getText("menu.File.Open_GPSies.com") + "...");
-		mntmOpenGpsiescomTrack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.openGPSies();
-			}
-		});
-		fileMenu.add(mntmOpenGpsiescomTrack);
-
-		JMenuItem mntmOpenDirectory = new JMenuItem(
-				International.getText("menu.File.Open_Directory") + "...");
-		mntmOpenDirectory.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.openDirectory();
-			}
-		});
-		fileMenu.add(mntmOpenDirectory);
-		fileMenu.addSeparator();
+		//-------------------------------------------------------------
+		// added save/saveas context menu to toolbar
+		addOpenContext();
+		//-------------------------------------------------------------
+		
 		
 		//-------------------------------------------------------------
 		// added save/saveas context menu to toolbar
