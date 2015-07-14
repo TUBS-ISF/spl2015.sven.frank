@@ -161,6 +161,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private SaveMapAsImageButton savemapimage_plugin;
 	private TrackModificationButtons trackmodification_plugin;
 	
+	
+	//TODO: maps helper function
+	private String mapType;
+	private void addMaps() {};
+	private void addMapsContextMenu() {};
 	//-------------------------------------------------
 	/**
 	 * Sets the variant of JGPSTrackEdit
@@ -169,7 +174,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// comment and uncomment the desired variant of JGPSTrackEdit
 
 		// TODO: This code must be optimized, generic list of tilemanagers
-		String mapType = Configuration.getProperty("MAPTYPE");
+		mapType = Configuration.getProperty("MAPTYPE");
 
 		if (mapType.equals("OpenStreetMap")) {
 			uiController.tileManagerOSM_Mapnik();
@@ -182,36 +187,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 			uiController.tileManagerOSM_Mapnik();
 		}
 
-		if (mapType.equals("MapQuest")) {
-			uiController.tileManagerMapQuest();
-			this.rdbtnmntmMapquest.setSelected(true);
-		} else if (mapType.equals("MapQuestSat")) {
-			uiController.tileManagerMapQuestSat();
-			this.rdbtnmntmMapquestsatellite.setSelected(true);
-		} else if (mapType.equals("MapQuestHybride")) {
-			uiController.tileManagerMapQuestHybride();
-			this.rdbtnmntmMapquesthybride.setSelected(true);
-		} else if (mapType.equals("HikeBikeMap")) {
-			uiController.tileManagerHikeBikeMap();
-			this.rdbtnmntmHikebikemap.setSelected(true);
-		} else if (mapType.equals("GoogleMap")) {
-			uiController.tileManagerGoogleMap();
-			this.rdbtnmntmGooglemap.setSelected(true);
-		} else if (mapType.equals("GoogleMapTerrain")) {
-			uiController.tileManagerGoogleMapTerrain();
-			this.rdbtnmntmGooglemapterrain.setSelected(true);
-		} else if (mapType.equals("GoogleMapSatellite")) {
-			uiController.tileManagerGoogleMapSatellite();
-			this.rdbtnmntmGooglemapsatellite.setSelected(true);
-		} else if (mapType.equals("GoogleMapHybrid")) {
-			uiController.tileManagerGoogleMapHybrid();
-			this.rdbtnmntmGooglemaphybrid.setSelected(true);
-		} else if (mapType.equals("4UMap")) {
-			uiController.tileManager4UMap();
-			this.rdbtnmntmumap.setSelected(true);
-		} 
+		addMaps();
 		
-
 		// Variant: Starts with u4map
 		// rdbtnmntmumap.setSelected(true);
 		// uiController.tileManager4UMap();
@@ -1221,22 +1198,14 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		trackMenu.add(mntmNew);
 		trackMenu.addSeparator();
 		menuBar.add(trackMenu);
+		
 		// -------------------------------------------------------------------------------------------------
 		// some modifications for track handling menu (split merge reverse compress)
-		
-		
 		if(trackmodification_plugin != null) {
-			addTrackmodificationContextMenu();
-			
-			
-			
-			
-	
-			
-			
-			
+			addTrackmodificationContextMenu();			
 		}
 		// -------------------------------------------------------------------------------------------------
+		
 		JMenuItem mntmUpdateElevation = new JMenuItem(
 				International.getText("menu.Track.Update_Elevation"));
 		mntmUpdateElevation.addActionListener(new ActionListener() {
@@ -1545,99 +1514,12 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		mnMaps.add(rdbtnmntmOpencyclemap);
 
-		JRadioButtonMenuItem rdbtnmntmGooglemap = new JRadioButtonMenuItem(
-				"GoogleMap");
-		mapRadioButtons.add(rdbtnmntmGooglemap);
-		rdbtnmntmGooglemap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerGoogleMap();
-			}
-		});
 		
-
-		rdbtnmntmHikebikemap = new JRadioButtonMenuItem("HikeBikeMap");
-	
-		mapRadioButtons.add(rdbtnmntmHikebikemap);
-		rdbtnmntmHikebikemap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerHikeBikeMap();
-			}
-		});
-		mnMaps.add(rdbtnmntmHikebikemap);
 		
-
-		rdbtnmntmumap = new JRadioButtonMenuItem("4UMap");
-		mapRadioButtons.add(rdbtnmntmumap);
-		rdbtnmntmumap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManager4UMap();
-			}
-		});
-		mnMaps.add(rdbtnmntmumap);
-		mnMaps.add(new JSeparator());
-
-		rdbtnmntmMapquest = new JRadioButtonMenuItem("MapQuest");
-		rdbtnmntmMapquest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.tileManagerMapQuest();
-			}
-		});
-		mnMaps.add(rdbtnmntmMapquest);
-	
-		mapRadioButtons.add(rdbtnmntmMapquest);
-
-		rdbtnmntmMapquestsatellite = new JRadioButtonMenuItem(
-				"MapQuest (Satellite)");
-		rdbtnmntmMapquestsatellite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerMapQuestSat();
-			}
-		});
-		mnMaps.add(rdbtnmntmMapquestsatellite);
-		mapRadioButtons.add(rdbtnmntmMapquestsatellite);
-
-		rdbtnmntmMapquesthybride = new JRadioButtonMenuItem(
-				"MapQuest (Hybride)");
-		rdbtnmntmMapquesthybride.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerMapQuestHybride();
-			}
-		});
-		mnMaps.add(rdbtnmntmMapquesthybride);
-		mapRadioButtons.add(rdbtnmntmMapquesthybride);
-
-		mnMaps.addSeparator();
-		mnMaps.add(rdbtnmntmGooglemap);
-
-		rdbtnmntmGooglemapsatellite = new JRadioButtonMenuItem(
-				"GoogleMap (Satellite)");
-		mapRadioButtons.add(rdbtnmntmGooglemapsatellite);
-		rdbtnmntmGooglemapsatellite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerGoogleMapSatellite();
-			}
-		});
-		mnMaps.add(rdbtnmntmGooglemapsatellite);
-
-		rdbtnmntmGooglemaphybrid = new JRadioButtonMenuItem(
-				"GoogleMap (Hybrid)");
-		mapRadioButtons.add(rdbtnmntmGooglemaphybrid);
-		rdbtnmntmGooglemaphybrid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerGoogleMapHybrid();
-			}
-		});
-		mnMaps.add(rdbtnmntmGooglemaphybrid);
-
-		rdbtnmntmGooglemapterrain = new JRadioButtonMenuItem(
-				"GoogleMap (Terrain)");
-		mapRadioButtons.add(rdbtnmntmGooglemapterrain);
-		rdbtnmntmGooglemapterrain.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uiController.tileManagerGoogleMapTerrain();
-			}
-		});
-		mnMaps.add(rdbtnmntmGooglemapterrain);
+		// ----------------------------------------------------------------------
+		// added googlemaps/moremaps context menu via aspects
+		addMapsContextMenu();
+		// ----------------------------------------------------------------------
 		
 		mnView.addSeparator();
 
