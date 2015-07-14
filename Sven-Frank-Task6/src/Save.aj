@@ -13,7 +13,7 @@ public privileged aspect Save {
 	declare parents : JGPSTrackEdit implements JGPSTrackEdit;
 
 	pointcut buttonConstructor() :
-		call(public void JGPSTrackEdit.addSavePlugin());
+		call(private void JGPSTrackEdit.addSavePlugin());
 	after(JGPSTrackEdit own):
 		buttonConstructor() && this(own)
 	{

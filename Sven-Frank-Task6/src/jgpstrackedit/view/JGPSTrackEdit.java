@@ -166,6 +166,16 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private String mapType;
 	private void addMaps() {};
 	private void addMapsContextMenu() {};
+	//TODO: plugin helper function
+	private void addSavePlugin(){};
+	private void addSaveImagePlugin(){};
+	private void addSaveImageContextMenu() {};
+
+	private void addSaveButtons() {}
+	private void addSaveContextMenu() {};
+	private void setSaveMenu(){};
+	private void addTrackModificationButtons() {};
+	private void addTrackmodificationContextMenu() {};
 	//-------------------------------------------------
 	/**
 	 * Sets the variant of JGPSTrackEdit
@@ -195,7 +205,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	}
 
-	public void addSavePlugin(){};
+	
 	/** Creates new form JGPSTrackEdit */
 	public JGPSTrackEdit() {
 		own = this;
@@ -203,11 +213,11 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// init plugins
 		//TODO: insert savetrack/saveas plugin via aspectj
 		addSavePlugin();
+		
+		addSaveImagePlugin();
+		
 		this.savemapextract_plugin = new SaveMapExtractButton();
 		savemapextract_plugin.setApplication(this);
-		
-		this.savemapimage_plugin = new SaveMapAsImageButton();
-		savemapimage_plugin.setApplication(this);
 		
 		this.trackmodification_plugin = new TrackModificationButtons();
 		trackmodification_plugin.initButtons(this);
@@ -435,13 +445,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		}
 
 	}
-
-	// TODO: helper functions for aspect-oriented programming
-	private void addSaveButtons() {}
-	private void addSaveContextMenu() {};
-	private void setSaveMenu(){};
-	private void addTrackModificationButtons() {};
-	private void addTrackmodificationContextMenu() {};
 	
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -1162,15 +1165,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable "save view as image"
-		if(savemapimage_plugin != null) {
-			mntmSaveMapView = new JMenuItem(savemapimage_plugin.getMenuNameText());
-			mntmSaveMapView.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					savemapimage_plugin.buttonClicked(uiController);
-				}
-			});
-			fileMenu.add(mntmSaveMapView);
-		}
+		addSaveImageContextMenu();
+		
 		// -------------------------------------------------------------------------------------------------
 
 		mntmSaveAltitudeProfile = new JMenuItem(International.getText("menu.File.Save_Altitude_Profile_as_Image") + "...");
