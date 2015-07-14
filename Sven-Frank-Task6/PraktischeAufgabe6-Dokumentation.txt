@@ -5,36 +5,33 @@ Alle anpassungen finden sich in der Main-Datei 'src.jgpstrackedit.view.JGPSTrack
 !!!!!!!!!!!!!!!
 
 
-Folgende Funktionen wurden umgeändert:
+Folgende Funktionen wurden umgeï¿½ndert:
 
 - Speicher & Speichern unter neuem Dateinamen: Dazu wird lediglich in der Conf-Klasse
-ein Parameter umgestellt, wodurch sämtliche Schaltflächen in der Anwendung ausgegraut 
-oder nicht angezeigt werden. In diesem Fall im Kontextmenü und in der oberen Schaltleiste.
-Ebenfalls funktionieren keine Shortcuts mehr für diese Funktionen
+ein Parameter umgestellt, wodurch sï¿½mtliche Schaltflï¿½chen in der Anwendung ausgegraut
+oder nicht angezeigt werden. In diesem Fall im Kontextmenï¿½ und in der oberen Schaltleiste.
+Ebenfalls funktionieren keine Shortcuts mehr fï¿½r diese Funktionen
 
-- Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
-lediglich zwei Kartenanbieter zur Verfügung gestellt (OpenStreetMap und OpenCycleMap). Dadurch 
-entfällt die Anbindung an Google. Ausgewählt werden können die Karten über das Kontextmenü
+- Einschrï¿½nkung der Kartenvielfalt fï¿½r die "Free oder Light Version". In diesem Modus werden,
+lediglich zwei Kartenanbieter zur Verfï¿½gung gestellt (OpenStreetMap und OpenCycleMap). Dadurch
+entfï¿½llt die Anbindung an Google. Ausgewï¿½hlt werden kï¿½nnen die Karten ï¿½ber das Kontextmenï¿½
 unter 'Ansicht-> Karten'
 
-- Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
-ist es möglich aktuelle Kartenauschnitte als Bilder zu speichern. Dadurch können diese Dateien dann
-auch offline auf anderen Geräten angeschaut werden.
+- Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalitï¿½t aktiviert sein, so
+ist es mï¿½glich aktuelle Kartenauschnitte als Bilder zu speichern. Dadurch kï¿½nnen diese Dateien dann
+auch offline auf anderen Gerï¿½ten angeschaut werden.
 
-Orte der Funktionalität:
-	- Button in der Funktionsleiste
-	- 'Datei -> Kartenansicht als Bild speichern'
-	- 'Ansicht -> Aktuellen Kartenausschnitt speichern'
-	- 'Kacheldownload'
 
-Folgende Funktionen wurde hinzugefügt und sind über Aspektanwahl steuerbar:
+Folgende Funktionen wurde hinzugefï¿½gt und sind ï¿½ber Aspektanwahl steuerbar:
 
 - Track teilbar in zwei einzelne Tracks
-- Tracks zusammenführen 
-- Track umkehren 
-- Track komprimieren 
+- Tracks zusammenfï¿½hren
+- Track umkehren
+- Track komprimieren
 
-ANMERKUNG: Sämtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarblöcke der 
+- Mandatory Feature: Open als Aspekt implementiert
+
+ANMERKUNG: Sï¿½mtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarblï¿½cke der
 folgenden Art gekennzeichnet:
 //---------------------------
 // Beschreibung
