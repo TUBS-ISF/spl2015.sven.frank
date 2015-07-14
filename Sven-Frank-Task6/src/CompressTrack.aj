@@ -3,7 +3,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
+import jgpstrackedit.international.International;
 import jgpstrackedit.view.JGPSTrackEdit;
 import jgpstrackedit.view.buttons.TrackCompressButton;
 import jgpstrackedit.view.buttons.TrackModificationButtons;
@@ -42,5 +44,20 @@ public privileged aspect CompressTrack {
 			}
 		});
 		own.toolBar.add(own.btnCompressTrack);	
+	}
+	
+	declare parents : JGPSTrackEdit implements JGPSTrackEdit;
+	pointcut addContextMenu () :
+		call(private void JGPSTrackEdit.addTrackmodificationContextMenu()) ; 
+	after(JGPSTrackEdit own) : addContextMenu() && this(own) {
+		System.out.println("Context menu Compress added");
+		own.mntmCompress = new JMenuItem(
+				International.getText("menu.Track.Compress") + "...");
+		own.mntmCompress.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				own.uiController.compress();
+			}
+		});
+		own.trackMenu.add(own.mntmCompress);
 	}
 }

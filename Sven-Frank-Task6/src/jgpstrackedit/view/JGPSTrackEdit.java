@@ -464,7 +464,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	private void addSaveContextMenu() {};
 	private void setSaveMenu(){};
 	private void addTrackModificationButtons() {};
-	
+	private void addTrackmodificationContextMenu() {};
 	
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -1145,11 +1145,12 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		fileMenu.add(mntmOpenDirectory);
 		fileMenu.addSeparator();
+		
 		//-------------------------------------------------------------
 		// added save/saveas context menu to toolbar
 		setSaveMenu();
-		
 		//-------------------------------------------------------------
+		
 		exitMenuItem.setText(International.getText("menu.File.Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1210,16 +1211,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		trackMenu.setText(International.getText("menu.Track"));
 		
-		// -------------------------------------------------------------------------------------------------
-		// some modifications for track handling menu (split merge reverse compress)
-		if(trackmodification_plugin != null) {
-			jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
-			jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					jMenuItemReverseActionPerformed(evt);
-				}
-			});
-		}
 		
 		mntmNew = new JMenuItem(International.getText("menu.Track.New"));
 		mntmNew.addActionListener(new ActionListener() {
@@ -1229,35 +1220,23 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		});
 		trackMenu.add(mntmNew);
 		trackMenu.addSeparator();
-		if(trackmodification_plugin != null)
-			trackMenu.add(jMenuItemReverse);
-
 		menuBar.add(trackMenu);
+		// -------------------------------------------------------------------------------------------------
+		// some modifications for track handling menu (split merge reverse compress)
+		
 		
 		if(trackmodification_plugin != null) {
-			mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
-					+ "...");
-			mntmSplit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleSplit();
+			addTrackmodificationContextMenu();
+			
+			
+			
+			
 	
-				}
-			});
-			trackMenu.add(mntmSplit);
-	
-			mntmMerge = new JMenuItem(International.getText("menu.Track.Merge")
-					+ "...");
-			mntmMerge.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					handleMerge();
-	
-				}
-			});
-			trackMenu.add(mntmMerge);
-			trackMenu.addSeparator();
+			
+			
+			
 		}
-		
-
+		// -------------------------------------------------------------------------------------------------
 		JMenuItem mntmUpdateElevation = new JMenuItem(
 				International.getText("menu.Track.Update_Elevation"));
 		mntmUpdateElevation.addActionListener(new ActionListener() {
@@ -1265,18 +1244,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 				uiController.updateElevation();
 			}
 		});
-
-		if(trackmodification_plugin != null) {
-			mntmCompress = new JMenuItem(
-					International.getText("menu.Track.Compress") + "...");
-			mntmCompress.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					uiController.compress();
-				}
-			});
-			trackMenu.add(mntmCompress);
-		}
-		// -------------------------------------------------------------------------------------------------
 		trackMenu.add(mntmUpdateElevation);
 
 		JMenuItem mntmCorrectPoints = new JMenuItem(

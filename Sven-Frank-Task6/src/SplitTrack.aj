@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
+import jgpstrackedit.international.International;
 import jgpstrackedit.view.JGPSTrackEdit;
 import jgpstrackedit.view.buttons.*;
 
@@ -42,5 +44,21 @@ public privileged aspect SplitTrack {
 			}
 		});
 		own.toolBar.add(own.btnSplitTrack);		
+	}
+	
+	declare parents : JGPSTrackEdit implements JGPSTrackEdit;
+	pointcut addContextMenu () :
+		call(private void JGPSTrackEdit.addTrackmodificationContextMenu()) ; 
+	after(JGPSTrackEdit own) : addContextMenu() && this(own) {
+		System.out.println("Context menu Split added");
+		own.mntmSplit = new JMenuItem(International.getText("menu.Track.Split")
+				+ "...");
+		own.mntmSplit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				own.handleSplit();
+
+			}
+		});
+		own.trackMenu.add(own.mntmSplit);
 	}
 }

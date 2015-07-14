@@ -3,7 +3,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
+import jgpstrackedit.international.International;
 import jgpstrackedit.view.JGPSTrackEdit;
 import jgpstrackedit.view.buttons.TrackModificationButtons;
 import jgpstrackedit.view.buttons.TrackReverseButton;
@@ -40,5 +42,19 @@ public privileged aspect ReverseTrack {
 			}
 		});
 		own.toolBar.add(own.btnReverseTrack);
+	}
+	
+	declare parents : JGPSTrackEdit implements JGPSTrackEdit;
+	pointcut addContextMenu () :
+		call(private void JGPSTrackEdit.addTrackmodificationContextMenu()) ; 
+	after(JGPSTrackEdit own) : addContextMenu() && this(own) {
+		System.out.println("Context menu Reverse added");
+		own.jMenuItemReverse.setText(International.getText("menu.Track.Reverse"));
+		own.jMenuItemReverse.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				own.jMenuItemReverseActionPerformed(evt);
+			}
+		});
+		own.trackMenu.add(own.jMenuItemReverse);
 	}
 }
