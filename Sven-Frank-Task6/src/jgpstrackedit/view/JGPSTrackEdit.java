@@ -459,9 +459,12 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 	}
 
+	// TODO: helper functions for aspect-oriented programming
 	private void addSaveButtons() {}
 	private void addSaveContextMenu() {};
 	private void setSaveMenu(){};
+	private void addTrackModificationButtons() {};
+	
 	
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -596,7 +599,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// -------------------------------------------------------------------------------------------------
 		// added: functionality to disable save_track/saveas button 
 		addSaveButtons();
-		
+		// -------------------------------------------------------------------------------------------------
+
 
 		btnConfiguration = new JButton("");
 		btnConfiguration.setBorder(null);
@@ -648,70 +652,7 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		// modifactions for track modification plugin
 		// TODO:
 		if(trackmodification_plugin != null) {
-			btnReverseTrack = new JButton("");
-			btnReverseTrack.setBorder(null);
-			btnReverseTrack.setContentAreaFilled(false);
-			btnReverseTrack.setMaximumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setMinimumSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setPreferredSize(trackmodification_plugin.track_reverse_btn.getButtonDimension());
-			btnReverseTrack.setToolTipText(trackmodification_plugin.track_reverse_btn.getButtonToolTip());
-			btnReverseTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_reverse_btn.getButtonIcon())));
-			btnReverseTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					trackmodification_plugin.track_reverse_btn.buttonClicked(uiController);
-				}
-			});
-			toolBar.add(btnReverseTrack);
-	
-			btnSplitTrack = new JButton("");
-			btnSplitTrack.setMaximumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setMinimumSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setPreferredSize(trackmodification_plugin.track_split_btn.getButtonDimension());
-			btnSplitTrack.setToolTipText(trackmodification_plugin.track_split_btn.getButtonToolTip());
-			btnSplitTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_split_btn.getButtonIcon())));
-			btnSplitTrack.setContentAreaFilled(false);
-			btnSplitTrack.setBorder(null);
-			btnSplitTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleSplit();
-				}
-			});
-			toolBar.add(btnSplitTrack);
-	
-			btnMergeTrack = new JButton("");
-			btnMergeTrack.setBorder(null);
-			btnMergeTrack.setContentAreaFilled(false);
-			btnMergeTrack.setMaximumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setMinimumSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setPreferredSize(trackmodification_plugin.track_merge_btn.getButtonDimension());
-			btnMergeTrack.setToolTipText(trackmodification_plugin.track_merge_btn.getButtonToolTip());
-			btnMergeTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_merge_btn.getButtonIcon())));
-			btnMergeTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					handleMerge();
-				}
-			});
-			toolBar.add(btnMergeTrack);
-	
-			btnCompressTrack = new JButton("");
-			btnCompressTrack.setMaximumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack.setMinimumSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack.setPreferredSize(trackmodification_plugin.track_compress_btn.getButtonDimension());
-			btnCompressTrack
-					.setToolTipText(trackmodification_plugin.track_compress_btn.getButtonToolTip());
-			btnCompressTrack.setIcon(new ImageIcon(JGPSTrackEdit.class
-					.getResource(trackmodification_plugin.track_compress_btn.getButtonIcon())));
-			btnCompressTrack.setContentAreaFilled(false);
-			btnCompressTrack.setBorder(null);
-			btnCompressTrack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					trackmodification_plugin.track_compress_btn.buttonClicked(uiController);;
-				}
-			});
-			toolBar.add(btnCompressTrack);
+			addTrackModificationButtons();
 		}
 		//---------------------------------------------------------------------
 		btnUpdateElevations = new JButton("");
