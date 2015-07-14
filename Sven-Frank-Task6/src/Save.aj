@@ -1,21 +1,10 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-//import java.awt.event.MouseMotionListener;
-//import java.awt.event.MouseWheelListener;
-
-//import javax.swing.event.ListSelectionListener;
-
-
-
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-
 import jgpstrackedit.international.International;
-//import jgpstrackedit.config.ConfigurationObserver;
 import jgpstrackedit.view.buttons.SaveTrackAsButton;
 import jgpstrackedit.view.buttons.SaveTrackButton;
 import jgpstrackedit.view.JGPSTrackEdit;;
@@ -28,7 +17,7 @@ public privileged aspect Save {
 	after(JGPSTrackEdit own):
 		buttonConstructor() && this(own)
 	{
-		System.out.println("Construct new Buttons");
+		System.out.println("Construct save plugin");
 		own.savetrack_plugin = new SaveTrackButton();	
 		own.savetrackas_plugin = new SaveTrackAsButton();
 	};
