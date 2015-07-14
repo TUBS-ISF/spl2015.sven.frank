@@ -12,14 +12,15 @@ ein Parameter umgestellt, wodurch sämtliche Schaltflächen in der Anwendung ausge
 oder nicht angezeigt werden. In diesem Fall im Kontextmenü und in der oberen Schaltleiste.
 Ebenfalls funktionieren keine Shortcuts mehr für diese Funktionen
 
-- TODO: Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
+- Einschränkung der Kartenvielfalt für die "Free oder Light Version". In diesem Modus werden,
 lediglich zwei Kartenanbieter zur Verfügung gestellt (OpenStreetMap und OpenCycleMap). Dadurch 
 entfällt die Anbindung an Google. Ausgewählt werden können die Karten über das Kontextmenü
 unter 'Ansicht-> Karten'
 
-- TODO: Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
+- Speichern von Kartenauschnitten als Bilder (JPEG). Sollte die Funktionalität aktiviert sein, so 
 ist es möglich aktuelle Kartenauschnitte als Bilder zu speichern. Dadurch können diese Dateien dann
 auch offline auf anderen Geräten angeschaut werden.
+
 Orte der Funktionalität:
 	- Button in der Funktionsleiste
 	- 'Datei -> Kartenansicht als Bild speichern'
