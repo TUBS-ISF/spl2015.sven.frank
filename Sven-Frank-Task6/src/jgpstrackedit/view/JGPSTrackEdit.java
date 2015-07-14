@@ -154,15 +154,19 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 	
 	//-------------------------------------------------
 	// plugins
+	@SuppressWarnings("unused")
 	private SaveTrackButton savetrack_plugin;
+	@SuppressWarnings("unused")
 	private SaveTrackAsButton savetrackas_plugin;
 	
 	private SaveMapExtractButton savemapextract_plugin;
+	@SuppressWarnings("unused")
 	private SaveMapAsImageButton savemapimage_plugin;
 	private TrackModificationButtons trackmodification_plugin;
 	
 	
 	//TODO: maps helper function
+	@SuppressWarnings("unused")
 	private String mapType;
 	private void addMaps() {};
 	private void addMapsContextMenu() {};
@@ -187,17 +191,6 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 
 		// TODO: This code must be optimized, generic list of tilemanagers
 		mapType = Configuration.getProperty("MAPTYPE");
-
-		if (mapType.equals("OpenStreetMap")) {
-			uiController.tileManagerOSM_Mapnik();
-			rdbtnmntmOpenstreetmapmapnik.setSelected(true);
-		} else if (mapType.equals("OpenCycleMap")) {
-			uiController.tileManagerOCM();
-			this.rdbtnmntmOpencyclemap.setSelected(true);
-		} else {
-			rdbtnmntmOpenstreetmapmapnik.setSelected(true);
-			uiController.tileManagerOSM_Mapnik();
-		}
 
 		addMaps();
 		
@@ -1418,45 +1411,8 @@ public class JGPSTrackEdit extends javax.swing.JFrame implements
 		mnMaps = new JMenu(International.getText("menu.View.Maps"));
 		mnView.add(mnMaps);
 
-		rdbtnmntmNone = new JRadioButtonMenuItem(
-				International.getText("menu.View.Maps.None"));
-		rdbtnmntmNone.setSelected(true);
-		mapRadioButtons.add(rdbtnmntmNone);
-		rdbtnmntmNone.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// No Map should be used
-				uiController.tileManagerNone();
-				repaint();
-
-			}
-		});
-		mnMaps.add(rdbtnmntmNone);
-
-		rdbtnmntmOpenstreetmapmapnik = new JRadioButtonMenuItem(
-				"OpenStreetMap (Mapnik)");
-		mapRadioButtons.add(rdbtnmntmOpenstreetmapmapnik);
-		rdbtnmntmOpenstreetmapmapnik.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// OSM (Mapnik) should be used
-				uiController.tileManagerOSM_Mapnik();
-			}
-		});
-		mnMaps.add(rdbtnmntmOpenstreetmapmapnik);
-		
-		
-		rdbtnmntmOpencyclemap = new JRadioButtonMenuItem("OpenCycleMap");
-		mapRadioButtons.add(rdbtnmntmOpencyclemap);
-		rdbtnmntmOpencyclemap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				uiController.tileManagerOCM();
-			}
-		});
-		mnMaps.add(rdbtnmntmOpencyclemap);
-
-		
-		
 		// ----------------------------------------------------------------------
-		// added googlemaps/moremaps context menu via aspects
+		// added osm/googlemaps/moremaps context menu via aspects
 		addMapsContextMenu();
 		// ----------------------------------------------------------------------
 		

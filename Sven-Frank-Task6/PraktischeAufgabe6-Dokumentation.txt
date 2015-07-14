@@ -30,6 +30,7 @@ Folgende Funktionen wurde hinzugef�gt und sind �ber Aspektanwahl steuerbar:
 - Track komprimieren
 
 - Mandatory Feature: Open als Aspekt implementiert
+- Mandatory Feature: OSM Maps als Aspekt implementiert
 
 ANMERKUNG: S�mtliche Bereiche in den die Anwendung angepasst wurde, sind durch Kommentarbl�cke der
 folgenden Art gekennzeichnet:
